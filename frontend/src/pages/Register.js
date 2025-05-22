@@ -38,7 +38,7 @@ const Register = () => {
     <Box
       sx={{
         minHeight: '100vh',
-        bgcolor: '#3c1c1b',
+        bgcolor: '#8B6F47',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',

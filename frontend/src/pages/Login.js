@@ -6,11 +6,11 @@ import {
   TextField,
   Button,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom'; // ⬅️ tambahkan ini
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
-  const navigate = useNavigate(); // ⬅️ inisialisasi navigate
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,22 +19,22 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Login submitted:', formData);
-    navigate('/landingpage'); 
+    navigate('/landingpage');
   };
 
   const handleGoToRegister = () => {
-    navigate('/daftar'); // ⬅️ navigasi ke halaman daftar
+    navigate('/daftar');
   };
 
   return (
     <Box
       sx={{
-        minHeight: '100vh',
-        bgcolor: '#3c1c1b',
+        height: '100vh',          // paksa tinggi penuh viewport
+        bgcolor: '#8B6F47',       // background warna tombol masuk versi gelap
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        p: 2,
+        p: 0,                     // hilangkan padding supaya background full
       }}
     >
       <Paper
@@ -46,6 +46,7 @@ const Login = () => {
           width: '100%',
           maxWidth: 800,
           minHeight: 400,
+          m: 2,                   // margin supaya tidak mepet ke pinggir layar
         }}
       >
         {/* Gambar kiri */}
@@ -75,7 +76,10 @@ const Login = () => {
           <Typography variant="h5" fontWeight="bold" color="#7b5e2a" mb={2}>
             SELAMAT DATANG
           </Typography>
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <form
+            onSubmit={handleSubmit}
+            style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
+          >
             <TextField
               name="email"
               placeholder="Email"
@@ -109,7 +113,7 @@ const Login = () => {
               Belum mempunyai akun?{' '}
               <span
                 style={{ color: '#7b5e2a', fontWeight: 'bold', cursor: 'pointer' }}
-                onClick={handleGoToRegister} // ⬅️ pakai event ini
+                onClick={handleGoToRegister}
               >
                 DAFTAR
               </span>
