@@ -7,12 +7,13 @@ import {
   Button,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import axios from '../axiosInstance';
 
 const Register = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    phone_number: '',
+    phone: '',
     password: '',
   });
 
@@ -25,10 +26,18 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Register submitted:', formData);
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    await axios.post('/register', formData);
+    alert('Registrasi berhasil!');
+    navigate('/');
+  } catch (error) {
+    console.error(error);
+    alert('Registrasi gagal!');
+  }
+};
+
 
   const handleGoToLogin = () => {
     navigate('/');
@@ -89,10 +98,10 @@ const Register = () => {
               size="small"
             />
             <TextField
-              name="phone_number"
+              name="phone"
               label="Nomor Telepon"
               placeholder="Masukkan Nomor Telepon"
-              value={formData.phone_number}
+              value={formData.phone}
               onChange={handleChange}
               fullWidth
               size="small"

@@ -7,7 +7,10 @@ import hotelRoutes from "./routes/hotelRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:3000", // ganti dengan URL frontend kamu
+  credentials: true,
+}));
 app.use(express.json());
 app.use(userRoutes);
 app.use(hotelRoutes);
