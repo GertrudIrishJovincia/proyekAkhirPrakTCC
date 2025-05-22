@@ -1,0 +1,60 @@
+### REGISTER USER
+POST http://localhost:5000/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "testuser@example.com",
+  "phone": "08123456789",
+  "password": "123456"
+}
+
+### GET ALL USERS
+GET http://localhost:5000/
+
+### CREATE HOTEL
+POST http://localhost:5000/
+Content-Type: application/json
+
+{
+  "name": "Hotel Surya",
+  "address": "Jl. Merdeka No.1",
+  "price_per_night": 500000,
+  "facilities": "WiFi, AC, Breakfast",
+  "rooms_available": 10,
+  "image_url": "http://example.com/image.jpg"
+}
+
+### GET ALL HOTELS
+GET http://localhost:5000/hotels
+
+### UPDATE HOTEL (misal id = 1)
+PUT http://localhost:5000/1
+Content-Type: application/json
+
+{
+  "price_per_night": 550000,
+  "rooms_available": 8
+}
+
+### DELETE HOTEL (misal id = 1)
+DELETE http://localhost:5000/1
+
+### CREATE BOOKING
+POST http://localhost:5000/createbooking
+Content-Type: application/json
+
+{
+  "user_id": 1,
+  "hotel_id": 1,
+  "guest_name": "Test Guest",
+  "guest_email": "guest@example.com",
+  "guest_phone": "08123456789",
+  "room_type": "Deluxe",
+  "check_in_date": "2025-06-10",
+  "check_out_date": "2025-06-15",
+  "total_price": 2500000
+}
+
+### GET ALL BOOKINGS
+GET http://localhost:5000/hotels
