@@ -8,6 +8,8 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
+import axios from '../axiosInstance';
+
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const navigate = useNavigate();
@@ -16,10 +18,16 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Login submitted:', formData);
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const response = await axios.post('/login', formData);
+    alert(response.data.msg);
     navigate('/landingpage');
+  } catch (error) {
+    console.error(error);
+    alert(error.response?.data?.msg || 'Login gagal');
+  }
   };
 
   const handleGoToRegister = () => {

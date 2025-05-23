@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import User from "../models/UserModel.js";
 
 // Ambil semua user
@@ -30,5 +31,23 @@ export const registerUser = async (req, res) => {
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ msg: "Terjadi kesalahan server" });
+  }
+};
+
+export const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ where: { email } });
+    if (!user) return res.status(404).json({ msg: "User tidak ditemukan" });
+
+    if (user.password !== password) {
+      return res.status(400).json({ msg: "Password salah" });
+    }
+
+    res.status(200).json({ msg: "Login berhasil", user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Server error" });
   }
 };
