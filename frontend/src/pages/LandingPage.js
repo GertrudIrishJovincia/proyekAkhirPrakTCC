@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+// import axios atau fetch biasa
+import axios from 'axios';
 import {
   Box,
   Typography,
@@ -17,60 +19,21 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-const hotels = [
-  {
-    name: 'Hotel Matahari',
-    image: '/assets/hotel1.png',
-    address: 'Jl. Veteran, Yogyakarta',
-    price: 'Rp300.000',
-    facilities: 'Ruangan besar, kamar mandi dalam, AC, kolam renang',
-    availability: '200 kamar',
-  },
-  {
-    name: 'Hotel Tentrem',
-    image: '/assets/hotel1.png',
-    address: 'Jl. Mangkubumi, Yogyakarta',
-    price: 'Rp450.000',
-    facilities: 'Deluxe room, spa, restoran',
-    availability: '100 kamar',
-  },
-  {
-    name: 'Mulia Resort',
-    image: '/assets/hotel1.png',
-    address: 'Jl. By Pass Ngurah Rai, Bali',
-    price: 'Rp800.000',
-    facilities: 'Private beach, kolam renang, gym',
-    availability: '50 kamar',
-  },
-  {
-    name: 'Hotel Oasis',
-    image: '/assets/hotel1.png',
-    address: 'Jl. Kemang, Jakarta',
-    price: 'Rp500.000',
-    facilities: 'Kolam renang, restoran, wifi',
-    availability: '120 kamar',
-  },
-  {
-    name: 'Grand Puri',
-    image: '/assets/hotel1.png',
-    address: 'Jl. Malioboro, Yogyakarta',
-    price: 'Rp350.000',
-    facilities: 'WiFi, Sarapan, Kolam Renang',
-    availability: '80 kamar',
-  },
-  {
-    name: 'Santika Premiere',
-    image: '/assets/hotel1.png',
-    address: 'Jl. Gatot Subroto, Jakarta',
-    price: 'Rp600.000',
-    facilities: 'Spa, Gym, Restoran',
-    availability: '60 kamar',
-  },
-];
-
 const LandingPage = () => {
   const navigate = useNavigate();
   const [selectedHotel, setSelectedHotel] = useState(null);
+  const [hotels, setHotels] = useState([]);
+
+  useEffect(() => {
+    // Fetch data hotel dari backend
+    axios.get('http://localhost:5000/api/hotels') // sesuaikan dengan URL backend-mu
+      .then(response => {
+        setHotels(response.data);
+      })
+      .catch(error => {
+        console.error('Gagal ambil data hotel:', error);
+      });
+  }, []);
 
   const handleOpenDialog = (hotel) => {
     setSelectedHotel(hotel);
@@ -82,7 +45,7 @@ const LandingPage = () => {
 
   return (
     <Box sx={{ display: 'flex', height: '100vh', bgcolor: '#8B6F47' }}>
-      {/* Sidebar */}
+      {/* Sidebar (sama seperti sebelumnya) */}
       <Box
         sx={{
           width: 250,
@@ -103,10 +66,7 @@ const LandingPage = () => {
         <List sx={{ flexGrow: 1 }}>
           <ListItem disablePadding>
             <ListItemButton selected sx={{ bgcolor: '#5e4b2a', borderRadius: 1 }}>
-              <ListItemText
-                primary="Pemesanan"
-                primaryTypographyProps={{ fontWeight: 'bold' }}
-              />
+              <ListItemText primary="Pemesanan" primaryTypographyProps={{ fontWeight: 'bold' }} />
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
@@ -125,7 +85,7 @@ const LandingPage = () => {
       <Box
         sx={{
           flex: 1,
-          minWidth: 0, // Penting supaya flex shrink bisa jalan dan grid bisa lebar
+          minWidth: 0,
           bgcolor: 'background.paper',
           p: 4,
           overflowY: 'auto',
@@ -141,31 +101,35 @@ const LandingPage = () => {
         </Typography>
 
         <Grid container spacing={3} mt={2} flexGrow={1}>
-          {hotels.map((hotel, idx) => (
-            <Grid item xs={12} sm={4} md={4} lg={4} key={idx}>
-              <Card
-                sx={{ borderRadius: 2, boxShadow: 3, cursor: 'pointer' }}
-                onClick={() => handleOpenDialog(hotel)}
-              >
-                <CardMedia
-                  component="img"
-                  height="240"
-                  image={hotel.image}
-                  alt={hotel.name}
-                />
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    align="center"
-                    fontWeight="bold"
-                    color="#6B4D1B"
-                  >
-                    {hotel.name}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
+          {hotels.length === 0 ? (
+            <Typography>Tidak ada hotel tersedia saat ini.</Typography>
+          ) : (
+            hotels.map((hotel, idx) => (
+              <Grid item xs={12} sm={4} md={4} lg={4} key={idx}>
+                <Card
+                  sx={{ borderRadius: 2, boxShadow: 3, cursor: 'pointer' }}
+                  onClick={() => handleOpenDialog(hotel)}
+                >
+                  <CardMedia
+                    component="img"
+                    height="240"
+                    image={hotel.image_url || '/assets/hotel1.png'} // sesuaikan field image_url
+                    alt={hotel.name}
+                  />
+                  <CardContent>
+                    <Typography
+                      variant="h6"
+                      align="center"
+                      fontWeight="bold"
+                      color="#6B4D1B"
+                    >
+                      {hotel.name}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
+            ))
+          )}
         </Grid>
       </Box>
 
@@ -174,26 +138,16 @@ const LandingPage = () => {
         {selectedHotel && (
           <DialogContent>
             <img
-              src={selectedHotel.image}
+              src={selectedHotel.image_url || '/assets/hotel1.png'}
               alt={selectedHotel.name}
               style={{ width: '100%', borderRadius: 6 }}
             />
             <Box mt={2}>
-              <Typography>
-                <strong>Nama Hotel:</strong> {selectedHotel.name}
-              </Typography>
-              <Typography>
-                <strong>Alamat:</strong> {selectedHotel.address}
-              </Typography>
-              <Typography>
-                <strong>Biaya per malam:</strong> {selectedHotel.price}
-              </Typography>
-              <Typography>
-                <strong>Fasilitas:</strong> {selectedHotel.facilities}
-              </Typography>
-              <Typography>
-                <strong>Ketersediaan kamar:</strong> {selectedHotel.availability}
-              </Typography>
+              <Typography><strong>Nama Hotel:</strong> {selectedHotel.name}</Typography>
+              <Typography><strong>Alamat:</strong> {selectedHotel.address}</Typography>
+              <Typography><strong>Biaya per malam:</strong> Rp{selectedHotel.price_per_night}</Typography>
+              <Typography><strong>Fasilitas:</strong> {selectedHotel.facilities}</Typography>
+              <Typography><strong>Ketersediaan kamar:</strong> {selectedHotel.rooms_available} kamar</Typography>
             </Box>
             <Box textAlign="center" mt={3}>
               <Button

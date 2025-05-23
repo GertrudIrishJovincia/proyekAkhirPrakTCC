@@ -53,6 +53,22 @@ export default function AdminDashboard() {
     }
   };
 
+ const handleDeleteHotel = async (hotelId) => {
+  console.log('Delete URL:', `/hotels/${hotelId}`); // <-- ini untuk cek URL yang akan dipanggil
+  if (!window.confirm("Yakin ingin menghapus hotel ini?")) return;
+
+  try {
+    await axios.delete(`/hotels/${hotelId}`);
+    alert("Hotel berhasil dihapus");
+    fetchHotels(); // refresh daftar hotel setelah hapus
+  } catch (error) {
+    console.error("Gagal hapus hotel:", error.response || error.message || error);
+    alert("Gagal menghapus hotel");
+  }
+};
+
+
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');

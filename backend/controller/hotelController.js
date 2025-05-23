@@ -29,15 +29,14 @@ export const createHotel = async (req, res) => {
 export const deleteHotel = async (req, res) => {
   try {
     const id = req.params.id;
-    const hotel = await Hotel.findByPk(id);
-    if (!hotel) {
-      return res.status(404).json({ msg: "Hotel tidak ditemukan" });
+    const deleted = await Hotel.destroy({ where: { id } });
+    if (deleted) {
+      res.json({ message: "Hotel berhasil dihapus" });
+    } else {
+      res.status(404).json({ message: "Hotel tidak ditemukan" });
     }
-    await hotel.destroy();
-    res.json({ msg: "Hotel berhasil dihapus" });
   } catch (error) {
-    console.error(error.message);
-    res.status(500).json({ msg: "Terjadi kesalahan server" });
+    res.status(500).json({ message: error.message });
   }
 };
 

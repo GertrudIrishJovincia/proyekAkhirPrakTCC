@@ -15,6 +15,7 @@ app.use(express.json());
 app.use(userRoutes);
 app.use(hotelRoutes);
 app.use(bookingRoutes);
+app.use("/api", hotelRoutes);
 
 const startServer = async () => {
   try {
