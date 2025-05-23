@@ -18,7 +18,7 @@ app.use(bookingRoutes);
 
 const startServer = async () => {
   try {
-    await db.sync();
+    await db.sync({alter: true});
     console.log("Database & tables sudah siap");
 
     app.listen(5000, () => console.log('Server up running...'));
