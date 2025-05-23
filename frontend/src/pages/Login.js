@@ -22,13 +22,25 @@ const Login = () => {
   e.preventDefault();
   try {
     const response = await axios.post('/login', formData);
+
+    // Simpan token dan role
+    localStorage.setItem('token', response.data.token || 'dummy'); // kalau belum ada JWT, pakai 'dummy'
+    localStorage.setItem('role', response.data.user.role);
+
     alert(response.data.msg);
-    navigate('/landingpage');
+
+    // Arahkan ke dashboard sesuai role
+    if (response.data.user.role === 'admin') {
+      navigate('/admin');
+    } else {
+      navigate('/landingpage');
+    }
   } catch (error) {
     console.error(error);
     alert(error.response?.data?.msg || 'Login gagal');
   }
-  };
+};
+
 
   const handleGoToRegister = () => {
     navigate('/daftar');

@@ -3,10 +3,11 @@ POST http://localhost:5000/register
 Content-Type: application/json
 
 {
-  "name": "Test User",
-  "email": "testuser@example.com",
+  "name": "admin",
+  "email": "min@admin.com",
   "phone": "08123456789",
-  "password": "123456"
+  "password": "admin123",
+  "role": "admin"
 }
 
 ### GET ALL USERS
