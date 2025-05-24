@@ -36,7 +36,7 @@ export default function AddHotel() {
 
     setLoading(true);
     try {
-      await axios.post('/hotels', {
+      await axios.post('/api/hotels', {
         name: formData.name,
         address: formData.address,
         price_per_night: Number(formData.price_per_night),

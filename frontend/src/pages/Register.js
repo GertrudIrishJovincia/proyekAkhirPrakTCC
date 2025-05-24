@@ -29,7 +29,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
   e.preventDefault();
   try {
-    await axios.post('/register', formData);
+    await axios.post('/api/users/register', formData);
     alert('Registrasi berhasil!');
     navigate('/');
   } catch (error) {

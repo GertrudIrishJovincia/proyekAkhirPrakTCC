@@ -1,4 +1,5 @@
 import Hotel from "../models/HotelModels.js";
+import Booking from "../models/BookingModels.js";
 
 export const getHotels = async (req, res) => {
   try {
@@ -29,6 +30,9 @@ export const createHotel = async (req, res) => {
 export const deleteHotel = async (req, res) => {
   try {
     const id = req.params.id;
+    // Hapus booking terkait dulu
+    await Booking.destroy({ where: { hotel_id: id } });
+    // Baru hapus hotel
     const deleted = await Hotel.destroy({ where: { id } });
     if (deleted) {
       res.json({ message: "Hotel berhasil dihapus" });
@@ -36,6 +40,7 @@ export const deleteHotel = async (req, res) => {
       res.status(404).json({ message: "Hotel tidak ditemukan" });
     }
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };

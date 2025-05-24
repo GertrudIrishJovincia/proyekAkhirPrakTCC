@@ -1,17 +1,17 @@
 ### REGISTER USER
-POST http://localhost:5000/register
+POST http://localhost:5000/daftar
 Content-Type: application/json
 
 {
   "name": "admin",
   "email": "min@admin.com",
   "phone": "08123456789",
-  "password": "admin123",
+  "password": "admin111",
   "role": "admin"
 }
 
 ### GET ALL USERS
-GET http://localhost:5000/
+GET http://localhost:5000/api/users
 
 ### CREATE HOTEL
 POST http://localhost:5000/

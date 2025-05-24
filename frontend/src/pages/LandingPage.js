@@ -100,37 +100,55 @@ const LandingPage = () => {
           Silahkan memilih hotel
         </Typography>
 
-        <Grid container spacing={3} mt={2} flexGrow={1}>
-          {hotels.length === 0 ? (
-            <Typography>Tidak ada hotel tersedia saat ini.</Typography>
-          ) : (
-            hotels.map((hotel, idx) => (
-              <Grid item xs={12} sm={4} md={4} lg={4} key={idx}>
-                <Card
-                  sx={{ borderRadius: 2, boxShadow: 3, cursor: 'pointer' }}
-                  onClick={() => handleOpenDialog(hotel)}
-                >
-                  <CardMedia
-                    component="img"
-                    height="240"
-                    image={hotel.image_url || '/assets/hotel1.png'} // sesuaikan field image_url
-                    alt={hotel.name}
-                  />
-                  <CardContent>
-                    <Typography
-                      variant="h6"
-                      align="center"
-                      fontWeight="bold"
-                      color="#6B4D1B"
-                    >
-                      {hotel.name}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))
-          )}
-        </Grid>
+       <Grid container spacing={3} mt={2} flexGrow={1} justifyContent="flex-start">
+  {hotels.map((hotel, idx) => (
+    <Grid item key={idx} style={{ width: 320 }}>
+      <Card
+        sx={{
+          borderRadius: 2,
+          boxShadow: 3,
+          cursor: 'pointer',
+          height: 360,  // tinggi card tetap
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          width: '100%', // penuh di dalam grid item 320px
+        }}
+        onClick={() => handleOpenDialog(hotel)}
+      >
+        <CardMedia
+          component="img"
+          image={hotel.image_url}
+          alt={hotel.name}
+          sx={{
+            width: '100%',
+            height: 200,
+            objectFit: 'cover',
+            borderRadius: '12px 12px 0 0',
+          }}
+        />
+        <CardContent
+          sx={{
+            flexGrow: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Typography
+            variant="h6"
+            align="center"
+            fontWeight="bold"
+            color="#6B4D1B"
+            noWrap
+          >
+            {hotel.name}
+          </Typography>
+        </CardContent>
+      </Card>
+    </Grid>
+  ))}
+</Grid>
       </Box>
 
       {/* Dialog detail hotel */}

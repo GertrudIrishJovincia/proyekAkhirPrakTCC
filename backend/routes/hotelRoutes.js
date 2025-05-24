@@ -3,9 +3,9 @@ import { createHotel, getHotels, deleteHotel } from "../controller/hotelControll
 
 const router = express.Router();
 
-router.post("/hotels", createHotel);
-router.get("/hotels", getHotels);
+router.post("/", createHotel);
+router.get("/", getHotels);
 // router.put("/:id", updateHotel);
-router.delete("/hotels/:id", deleteHotel);
+router.delete("/:id", deleteHotel);
 
 export default router;

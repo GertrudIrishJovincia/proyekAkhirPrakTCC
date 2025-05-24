@@ -68,7 +68,7 @@ const BookingForm = () => {
     };
     console.log("Payload booking:", payload);
 
-    await axios.post('/createbooking', payload);  // pastikan ada await
+    await axios.post('/api/createbooking', payload);  // pastikan ada await
     alert('Booking berhasil dibuat!');
 
     // Reset form

@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import UserTable from '../components/UserTable';
 import HotelTable from '../components/HotelTable';
-import BookingTable from '../components/BookingTable';
+// import BookingTable from '../components/BookingTable';
 import { useNavigate } from 'react-router-dom';
 
 export default function AdminDashboard() {
@@ -34,7 +34,7 @@ export default function AdminDashboard() {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get('/users');
+      const res = await axios.get('/api/users');
       setUsers(res.data);
     } catch (error) {
       console.error('Gagal ambil user:', error);
@@ -43,7 +43,7 @@ export default function AdminDashboard() {
 
   const fetchHotels = async () => {
     try {
-      const res = await axios.get('/hotels');
+      const res = await axios.get('/api/hotels');
       setHotels(res.data);
     } catch (error) {
       console.error('Gagal ambil hotel:', error);
@@ -52,7 +52,7 @@ export default function AdminDashboard() {
 
 const fetchBookings = async () => {
   try {
-    const res = await axios.get('/bookings');
+    const res = await axios.get('/api/bookings');
     console.log('Data booking dari backend:', res.data);
     setBookings(res.data);
   } catch (error) {
@@ -61,19 +61,17 @@ const fetchBookings = async () => {
 };
 
  const handleDeleteHotel = async (hotelId) => {
-  console.log('Delete URL:', `/hotels/${hotelId}`); // <-- ini untuk cek URL yang akan dipanggil
   if (!window.confirm("Yakin ingin menghapus hotel ini?")) return;
 
   try {
-    await axios.delete(`/hotels/${hotelId}`);
+    await axios.delete(`/api/hotels/${hotelId}`);  // PENTING: pakai prefix /api/hotels
     alert("Hotel berhasil dihapus");
-    fetchHotels(); // refresh daftar hotel setelah hapus
+    fetchHotels(); // refresh data hotel setelah hapus
   } catch (error) {
     console.error("Gagal hapus hotel:", error.response || error.message || error);
     alert("Gagal menghapus hotel");
   }
 };
-
 
 
   const handleLogout = () => {
@@ -146,11 +144,10 @@ const fetchBookings = async () => {
 
         <Divider sx={{ mb: 2 }} />
 
-        <HotelTable hotels={hotels} onRefresh={fetchHotels} />
+       <HotelTable hotels={hotels} onRefresh={fetchHotels} onDeleteHotel={handleDeleteHotel} />
       </Paper>
 
       {/* Section Booking */}
-      // bagian booking section di AdminDashboard.jsx
 <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
   <Typography variant="h6" fontWeight="bold" color="secondary" gutterBottom>
     📅 Daftar Booking

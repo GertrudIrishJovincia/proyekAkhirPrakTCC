@@ -25,7 +25,7 @@ const RiwayatPemesanan = () => {
           navigate("/");
           return;
         }
-        const res = await axios.get(`/userbookings?user_id=${userId}`);
+        const res = await axios.get(`/api/userbookings?user_id=${userId}`);
         setHistory(res.data);
       } catch (error) {
         console.error("Gagal ambil riwayat:", error);

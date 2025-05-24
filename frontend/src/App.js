@@ -18,7 +18,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/daftar" element={<Register />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/landingpage" element={<LandingPage />} />
           <Route path="/booking" element={<BookingForm />} />
           <Route path="/riwayat" element={<RiwayatPemesanan />} />

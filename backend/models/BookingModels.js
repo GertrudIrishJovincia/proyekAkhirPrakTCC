@@ -16,6 +16,7 @@ const Booking = db.define("bookings", {
       model: User,
       key: "id",
     },
+    onDelete: "CASCADE",
   },
   hotel_id: {
     type: DataTypes.INTEGER,
@@ -24,6 +25,7 @@ const Booking = db.define("bookings", {
       model: Hotel,
       key: "id",
     },
+    onDelete: "CASCADE",
   },
   guest_name: {
     type: DataTypes.STRING,

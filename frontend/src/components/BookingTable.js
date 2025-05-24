@@ -14,7 +14,6 @@ import {
 export default function BookingTable({ bookings, onRefresh }) {
   const handleEdit = (booking) => {
     alert(`Edit booking ID: ${booking.id}\nFitur edit belum dibuat`);
-    // Bisa dikembangkan untuk buka modal/form edit booking
   };
 
   const handleDelete = async (id) => {

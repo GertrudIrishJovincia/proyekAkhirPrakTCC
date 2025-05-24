@@ -12,23 +12,21 @@ import {
   Avatar,
   Tooltip,
 } from '@mui/material';
-import axios from '../axiosInstance';
 
-export default function HotelTable({ hotels, onRefresh }) {
-  const handleDelete = async (id) => {
+export default function HotelTable({ hotels, onRefresh, onDeleteHotel }) {
+  // fallback jika onDeleteHotel tidak diberikan
+  const handleDelete = (id) => {
     if (!window.confirm('Yakin ingin menghapus hotel ini?')) return;
-    try {
-      await axios.delete(`/${id}`);
-      onRefresh();
-    } catch (err) {
-      console.error('Gagal hapus hotel:', err);
-      alert('Gagal menghapus hotel.');
+    if (onDeleteHotel) {
+      onDeleteHotel(id);
+    } else {
+      alert('Fungsi hapus belum tersedia.');
     }
   };
 
   const handleEdit = (hotel) => {
     alert(`Edit Hotel:\nNama: ${hotel.name}\nHarga: Rp ${hotel.price_per_night.toLocaleString()}`);
-    // Nanti bisa dikembangkan ke form edit/modal
+    // Bisa dikembangkan untuk modal edit
   };
 
   return (
@@ -84,13 +82,13 @@ export default function HotelTable({ hotels, onRefresh }) {
                     Edit
                   </Button>
                   <Button
-                    variant="outlined"
-                    size="small"
-                    color="error"
-                    onClick={() => handleDelete(hotel.id)}
-                  >
-                    Hapus
-                  </Button>
+                  variant="outlined"
+                  size="small"
+                  color="error"
+                  onClick={() => onDeleteHotel(hotel.id)}  // Panggil dari props, jangan axios.delete langsung
+                >
+                  Hapus
+                </Button>
                 </Stack>
               </TableCell>
             </TableRow>

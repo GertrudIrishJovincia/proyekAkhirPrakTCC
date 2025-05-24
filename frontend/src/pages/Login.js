@@ -21,7 +21,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
   e.preventDefault();
   try {
-    const response = await axios.post('/login', formData);
+    const response = await axios.post('/api/users/login', formData);
     console.log('Login response:', response.data);
 
     localStorage.setItem('token', response.data.token || 'dummy');
@@ -43,7 +43,7 @@ const Login = () => {
 
 
   const handleGoToRegister = () => {
-    navigate('/daftar');
+    navigate('/register');
   };
 
   return (
