@@ -7,22 +7,28 @@ import hotelRoutes from "./routes/hotelRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 
 const app = express();
+
 app.use(cors({
-  origin: "http://localhost:3000", // ganti dengan URL frontend kamu
+  origin: "http://localhost:3000", // URL frontend
   credentials: true,
 }));
+
 app.use(express.json());
-app.use(userRoutes);
-app.use(hotelRoutes);
-app.use(bookingRoutes);
-app.use("/api", hotelRoutes);
+
+// Rute harus dikasih prefix API agar terstruktur dan menghindari bentrok
+app.use("/api/users", userRoutes);
+app.use("/api/hotels", hotelRoutes);
+app.use("/api", bookingRoutes);// bookingRoutes sudah punya prefix '/createbooking' dan '/bookings'
+
+// Hapus duplikasi penggunaan hotelRoutes tanpa prefix:
+// app.use(hotelRoutes); // ini bisa dihapus
 
 const startServer = async () => {
   try {
-    await db.sync({alter: true});
+    await db.sync({ alter: true }); // sync db dengan alter untuk update tabel sesuai model
     console.log("Database & tables sudah siap");
 
-    app.listen(5000, () => console.log('Server up running...'));
+    app.listen(5000, () => console.log('Server up running on port 5000...'));
   } catch (error) {
     console.error("Gagal sinkronisasi database:", error);
   }

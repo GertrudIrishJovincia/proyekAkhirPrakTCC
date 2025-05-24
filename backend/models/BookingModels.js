@@ -59,4 +59,8 @@ const Booking = db.define("bookings", {
   updatedAt: "updated_at",
 });
 
+// Setelah Booking terdefinisi, baru buat relasi
+Booking.belongsTo(Hotel, { foreignKey: "hotel_id" });
+Booking.belongsTo(User, { foreignKey: "user_id" });
+
 export default Booking;

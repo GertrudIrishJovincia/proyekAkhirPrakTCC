@@ -22,14 +22,14 @@ const Login = () => {
   e.preventDefault();
   try {
     const response = await axios.post('/login', formData);
+    console.log('Login response:', response.data);
 
-    // Simpan token dan role
-    localStorage.setItem('token', response.data.token || 'dummy'); // kalau belum ada JWT, pakai 'dummy'
+    localStorage.setItem('token', response.data.token || 'dummy');
     localStorage.setItem('role', response.data.user.role);
+    localStorage.setItem('userId', response.data.user.id);  // Pastikan ini ada
 
     alert(response.data.msg);
 
-    // Arahkan ke dashboard sesuai role
     if (response.data.user.role === 'admin') {
       navigate('/admin');
     } else {
@@ -49,12 +49,12 @@ const Login = () => {
   return (
     <Box
       sx={{
-        height: '100vh',          // paksa tinggi penuh viewport
-        bgcolor: '#8B6F47',       // background warna tombol masuk versi gelap
+        height: '100vh',
+        bgcolor: '#8B6F47',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        p: 0,                     // hilangkan padding supaya background full
+        p: 0,
       }}
     >
       <Paper
@@ -66,7 +66,7 @@ const Login = () => {
           width: '100%',
           maxWidth: 800,
           minHeight: 400,
-          m: 2,                   // margin supaya tidak mepet ke pinggir layar
+          m: 2,
         }}
       >
         {/* Gambar kiri */}
