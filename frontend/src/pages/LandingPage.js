@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-// import axios atau fetch biasa
-import axios from 'axios';
+import axios from 'axios';  // bisa pakai axiosInstance juga kalau sudah ada
 import {
   Box,
   Typography,
@@ -23,10 +22,25 @@ const LandingPage = () => {
   const navigate = useNavigate();
   const [selectedHotel, setSelectedHotel] = useState(null);
   const [hotels, setHotels] = useState([]);
+  const [userName, setUserName] = useState("User"); // default
 
   useEffect(() => {
-    // Fetch data hotel dari backend
-    axios.get('http://localhost:5000/api/hotels') // sesuaikan dengan URL backend-mu
+    // Ambil userId dari localStorage
+    const userId = localStorage.getItem("userId");
+    if (userId) {
+      axios.get(`http://localhost:5000/api/users/${userId}`)
+        .then(res => {
+          if (res.data && res.data.name) {
+            setUserName(res.data.name);
+          }
+        })
+        .catch(err => {
+          console.error("Gagal ambil data user:", err);
+        });
+    }
+
+    // Fetch data hotel
+    axios.get('http://localhost:5000/api/hotels')
       .then(response => {
         setHotels(response.data);
       })
@@ -45,21 +59,19 @@ const LandingPage = () => {
 
   return (
     <Box sx={{ display: 'flex', height: '100vh', bgcolor: '#8B6F47' }}>
-      {/* Sidebar (sama seperti sebelumnya) */}
-      <Box
-        sx={{
-          width: 250,
-          bgcolor: '#715737',
-          color: 'white',
-          p: 3,
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
+      {/* Sidebar */}
+      <Box sx={{
+        width: 250,
+        bgcolor: '#715737',
+        color: 'white',
+        p: 3,
+        display: 'flex',
+        flexDirection: 'column',
+      }}>
         <Box sx={{ textAlign: 'center', mb: 3 }}>
           <Avatar sx={{ width: 80, height: 80, margin: '0 auto' }} />
           <Typography variant="h6" sx={{ mt: 1 }}>
-            imau
+            {userName}
           </Typography>
         </Box>
 
@@ -82,73 +94,58 @@ const LandingPage = () => {
       </Box>
 
       {/* Konten utama */}
-      <Box
-        sx={{
-          flex: 1,
-          minWidth: 0,
-          bgcolor: 'background.paper',
-          p: 4,
-          overflowY: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
+      <Box sx={{
+        flex: 1,
+        minWidth: 0,
+        bgcolor: 'background.paper',
+        p: 4,
+        overflowY: 'auto',
+        display: 'flex',
+        flexDirection: 'column',
+      }}>
         <Typography variant="h5" fontWeight="bold" gutterBottom>
-          Selamat datang, imau
+          Selamat datang, {userName}
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
           Silahkan memilih hotel
         </Typography>
 
-       <Grid container spacing={3} mt={2} flexGrow={1} justifyContent="flex-start">
-  {hotels.map((hotel, idx) => (
-    <Grid item key={idx} style={{ width: 320 }}>
-      <Card
-        sx={{
-          borderRadius: 2,
-          boxShadow: 3,
-          cursor: 'pointer',
-          height: 360,  // tinggi card tetap
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          width: '100%', // penuh di dalam grid item 320px
-        }}
-        onClick={() => handleOpenDialog(hotel)}
-      >
-        <CardMedia
-          component="img"
-          image={hotel.image_url}
-          alt={hotel.name}
-          sx={{
-            width: '100%',
-            height: 200,
-            objectFit: 'cover',
-            borderRadius: '12px 12px 0 0',
-          }}
-        />
-        <CardContent
-          sx={{
-            flexGrow: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Typography
-            variant="h6"
-            align="center"
-            fontWeight="bold"
-            color="#6B4D1B"
-            noWrap
-          >
-            {hotel.name}
-          </Typography>
-        </CardContent>
-      </Card>
-    </Grid>
-  ))}
-</Grid>
+        <Grid container spacing={3} mt={2} flexGrow={1} justifyContent="flex-start">
+          {hotels.map((hotel, idx) => (
+            <Grid item key={idx} style={{ width: 320 }}>
+              <Card
+                sx={{
+                  borderRadius: 2,
+                  boxShadow: 3,
+                  cursor: 'pointer',
+                  height: 360,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                }}
+                onClick={() => handleOpenDialog(hotel)}
+              >
+                <CardMedia
+                  component="img"
+                  image={hotel.image_url}
+                  alt={hotel.name}
+                  sx={{
+                    width: '100%',
+                    height: 200,
+                    objectFit: 'cover',
+                    borderRadius: '12px 12px 0 0',
+                  }}
+                />
+                <CardContent sx={{ flexGrow: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Typography variant="h6" align="center" fontWeight="bold" color="#6B4D1B" noWrap>
+                    {hotel.name}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
       </Box>
 
       {/* Dialog detail hotel */}

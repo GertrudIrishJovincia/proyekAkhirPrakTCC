@@ -1,18 +1,17 @@
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
 import User from "../models/UserModel.js";
 
-// Ambil semua user
-export const getUsers = async (req, res) => {
+export const getUserById = async (req, res) => {
   try {
-    const users = await User.findAll();
-    res.status(200).json(users);
+    const user = await User.findByPk(req.params.id);
+    if (!user) return res.status(404).json({ msg: "User tidak ditemukan" });
+    res.json(user);
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
     res.status(500).json({ msg: "Terjadi kesalahan server" });
   }
 };
 
-// Register user dengan hashing password dan menerima role
 export const registerUser = async (req, res) => {
   try {
     const { name, email, phone, password, role } = req.body;
@@ -26,7 +25,6 @@ export const registerUser = async (req, res) => {
       return res.status(409).json({ msg: "Email sudah digunakan" });
     }
 
-    // Hash password sebelum simpan
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({
@@ -34,17 +32,16 @@ export const registerUser = async (req, res) => {
       email,
       phone,
       password: hashedPassword,
-      role: role || "user" // default role jika tidak dikirim
+      role: role || "user",
     });
 
     res.status(201).json({ msg: "User berhasil dibuat", user: newUser });
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
     res.status(500).json({ msg: "Terjadi kesalahan server" });
   }
 };
 
-// Login user dengan validasi bcrypt dan kirim data role
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -61,8 +58,8 @@ export const loginUser = async (req, res) => {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: user.role
-      }
+        role: user.role,
+      },
     });
   } catch (error) {
     console.error(error);
