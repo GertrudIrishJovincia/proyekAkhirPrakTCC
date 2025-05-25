@@ -1,11 +1,12 @@
+import "./models/associations.js";
 import express from "express";
 import cors from "cors";
-
 import db from "./config/database.js";
 import userRoutes from "./routes/userRoutes.js";
 import hotelRoutes from "./routes/hotelRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
-import "./models/associations.js";
+import roomTypeRoutes from "./routes/roomTypeRoutes.js";
+
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/hotels", hotelRoutes);
 app.use("/api", bookingRoutes);// bookingRoutes sudah punya prefix '/createbooking' dan '/bookings'
+app.use("/api", roomTypeRoutes);
 
 // Hapus duplikasi penggunaan hotelRoutes tanpa prefix:
 // app.use(hotelRoutes); // ini bisa dihapus

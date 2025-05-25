@@ -8,16 +8,10 @@ import {
   Container,
   Button,
   Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
 } from '@mui/material';
 import UserTable from '../components/UserTable';
 import HotelTable from '../components/HotelTable';
-// import BookingTable from '../components/BookingTable';
+import BookingTable from '../components/BookingTable';
 import { useNavigate } from 'react-router-dom';
 
 export default function AdminDashboard() {
@@ -33,32 +27,35 @@ export default function AdminDashboard() {
   }, []);
 
   const fetchUsers = async () => {
-    try {
-      const res = await axios.get('/api/users');
-      setUsers(res.data);
-    } catch (error) {
-      console.error('Gagal ambil user:', error);
-    }
-  };
+  try {
+    const res = await axios.get('/api/users');
+    console.log('Users:', res.data);
+    setUsers(res.data);
+  } catch (error) {
+    console.error('Gagal ambil user:', error);
+  }
+};
 
-  const fetchHotels = async () => {
-    try {
-      const res = await axios.get('/api/hotels');
-      setHotels(res.data);
-    } catch (error) {
-      console.error('Gagal ambil hotel:', error);
-    }
-  };
+const fetchHotels = async () => {
+  try {
+    const res = await axios.get('/api/hotels');  // panggil endpoint utama
+    setHotels(res.data);
+  } catch (error) {
+    console.error('Gagal ambil hotel:', error);
+  }
+};
+
 
 const fetchBookings = async () => {
   try {
     const res = await axios.get('/api/bookings');
-    console.log('Data booking dari backend:', res.data);
+    console.log('Bookings:', res.data);
     setBookings(res.data);
   } catch (error) {
     console.error('Gagal ambil booking:', error);
   }
 };
+
 
  const handleDeleteHotel = async (hotelId) => {
   if (!window.confirm("Yakin ingin menghapus hotel ini?")) return;
@@ -72,6 +69,15 @@ const fetchBookings = async () => {
     alert("Gagal menghapus hotel");
   }
 };
+
+ const handleEditHotel = (hotel) => {
+    navigate(`/admin/hotels/edit/${hotel.id}`);
+  };
+
+  const handleEditBooking = (booking) => {
+  navigate(`/admin/bookings/edit/${booking.id}`);
+};
+
 
 
   const handleLogout = () => {
@@ -144,46 +150,21 @@ const fetchBookings = async () => {
 
         <Divider sx={{ mb: 2 }} />
 
-       <HotelTable hotels={hotels} onRefresh={fetchHotels} onDeleteHotel={handleDeleteHotel} />
+       <HotelTable hotels={hotels} onRefresh={fetchHotels} onDeleteHotel={handleDeleteHotel} onEditHotel={handleEditHotel}  />
       </Paper>
 
       {/* Section Booking */}
-<Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
-  <Typography variant="h6" fontWeight="bold" color="secondary" gutterBottom>
-    📅 Daftar Booking
-  </Typography>
-  <Divider sx={{ mb: 2 }} />
-  <TableContainer component={Paper}>
-    <Table size="small">
-      <TableHead sx={{ backgroundColor: '#f5f5f5' }}>
-        <TableRow>
-          <TableCell>Nama Hotel</TableCell>
-          <TableCell>Nama Tamu</TableCell>
-          <TableCell>Email Tamu</TableCell>
-          <TableCell>Telepon Tamu</TableCell>
-          <TableCell>Tipe Kamar</TableCell>
-          <TableCell>Check In</TableCell>
-          <TableCell>Check Out</TableCell>
-          <TableCell>Total Harga</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {bookings.map((b) => (
-          <TableRow key={b.id}>
-            <TableCell>{b.hotel_name}</TableCell>
-            <TableCell>{b.guest_name}</TableCell>
-            <TableCell>{b.guest_email}</TableCell>
-            <TableCell>{b.guest_phone}</TableCell>
-            <TableCell>{b.room_type}</TableCell>
-            <TableCell>{b.check_in_date}</TableCell>
-            <TableCell>{b.check_out_date}</TableCell>
-            <TableCell>{`Rp ${Number(b.total_price).toLocaleString()}`}</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  </TableContainer>
-</Paper>
-    </Container>
-  );
-}
+      <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
+        <Typography variant="h6" fontWeight="bold" color="secondary" gutterBottom>
+          📅 Daftar Booking
+        </Typography>
+        <Divider sx={{ mb: 2 }} />
+        <BookingTable
+        bookings={bookings}
+        onRefresh={fetchBookings}
+        onEditBooking={handleEditBooking}
+      />
+      </Paper>
+          </Container>
+        );
+      }

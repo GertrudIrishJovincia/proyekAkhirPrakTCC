@@ -42,6 +42,19 @@ export const registerUser = async (req, res) => {
   }
 };
 
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.findAll({
+      attributes: ['id', 'name', 'email', 'phone', 'role'], // field yang ingin ditampilkan
+    });
+    res.status(200).json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Gagal mengambil data user" });
+  }
+};
+
+
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -66,3 +79,6 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ msg: "Server error" });
   }
 };
+
+
+

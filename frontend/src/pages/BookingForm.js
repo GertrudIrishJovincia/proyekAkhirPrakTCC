@@ -9,83 +9,109 @@ import {
   Paper,
   Grid,
 } from '@mui/material';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from '../axiosInstance';
 
 const BookingForm = () => {
   const location = useLocation();
   const selectedHotel = location.state;
+  const navigate = useNavigate();
 
+  const [roomTypes, setRoomTypes] = useState([]); // tipe kamar hotel
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    roomType: 'Standard',
+    roomType: '',
     checkIn: '',
     checkOut: '',
     totalPrice: 0,
   });
 
-  const pricePerNight = Number(selectedHotel?.price || selectedHotel?.price_per_night) || 0;
-
+  // Ambil tipe kamar ketika halaman mount
   useEffect(() => {
-    if (formData.checkIn && formData.checkOut) {
+    const fetchRoomTypes = async () => {
+      try {
+        const res = await axios.get(`/api/hotels/${selectedHotel.id}/roomtypes`);
+        setRoomTypes(res.data);
+        if(res.data.length > 0) {
+          setFormData(prev => ({ ...prev, roomType: res.data[0].type }));
+        }
+      } catch (error) {
+        console.error('Gagal ambil tipe kamar:', error);
+      }
+    };
+    if(selectedHotel?.id) fetchRoomTypes();
+  }, [selectedHotel]);
+
+  // Update total harga saat check-in, check-out, atau tipe kamar berubah
+  useEffect(() => {
+    if (formData.checkIn && formData.checkOut && formData.roomType) {
       const checkInDate = new Date(formData.checkIn);
       const checkOutDate = new Date(formData.checkOut);
       const diffTime = checkOutDate - checkInDate;
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       if (diffDays > 0) {
+        // Cari harga per malam tipe kamar yang dipilih
+        const selectedRoomType = roomTypes.find(rt => rt.type === formData.roomType);
+        const pricePerNight = selectedRoomType ? Number(selectedRoomType.price_per_night) : 0;
         const total = diffDays * pricePerNight;
-        setFormData((prev) => ({ ...prev, totalPrice: total }));
+        setFormData(prev => ({ ...prev, totalPrice: total }));
       } else {
-        setFormData((prev) => ({ ...prev, totalPrice: 0 }));
+        setFormData(prev => ({ ...prev, totalPrice: 0 }));
       }
     }
-  }, [formData.checkIn, formData.checkOut, pricePerNight]);
+  }, [formData.checkIn, formData.checkOut, formData.roomType, roomTypes]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-      alert('Anda harus login terlebih dahulu');
-      return;
+    e.preventDefault();
+
+    const isConfirmed = window.confirm('Apakah data yang Anda masukkan sudah benar?');
+    if (!isConfirmed) return;
+
+    try {
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        alert('Anda harus login terlebih dahulu');
+        return;
+      }
+      const payload = {
+        user_id: Number(userId),
+        hotel_id: selectedHotel?.id,
+        guest_name: formData.name,
+        guest_email: formData.email,
+        guest_phone: formData.phone,
+        room_type: formData.roomType,
+        check_in_date: formData.checkIn,
+        check_out_date: formData.checkOut,
+        total_price: formData.totalPrice,
+      };
+      console.log("Payload booking:", payload);
+
+      await axios.post('/api/createbooking', payload);
+      alert('Booking berhasil dibuat!');
+
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        roomType: roomTypes.length > 0 ? roomTypes[0].type : '',
+        checkIn: '',
+        checkOut: '',
+        totalPrice: 0,
+      });
+
+      navigate('/landingpage');
+
+    } catch (error) {
+      console.error('Error booking:', error.response?.data || error.message || error);
+      alert('Gagal membuat booking.');
     }
-    const payload = {
-      user_id: Number(userId),
-      hotel_id: selectedHotel?.id,
-      guest_name: formData.name,
-      guest_email: formData.email,
-      guest_phone: formData.phone,
-      room_type: formData.roomType,
-      check_in_date: formData.checkIn,
-      check_out_date: formData.checkOut,
-      total_price: formData.totalPrice,
-    };
-    console.log("Payload booking:", payload);
-
-    await axios.post('/api/createbooking', payload);  // pastikan ada await
-    alert('Booking berhasil dibuat!');
-
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      roomType: 'Standard',
-      checkIn: '',
-      checkOut: '',
-      totalPrice: 0,
-    });
-  } catch (error) {
-    console.error('Error booking:', error.response?.data || error.message || error);
-    alert('Gagal membuat booking.');
-  }
-};
+  };
 
   return (
     <Container maxWidth="sm">
@@ -99,7 +125,10 @@ const BookingForm = () => {
         </Typography>
 
         <Typography variant="subtitle2" gutterBottom>
-          Harga per malam: Rp {pricePerNight.toLocaleString('id-ID')}
+          Harga per malam: Rp {(() => {
+            const rt = roomTypes.find(rt => rt.type === formData.roomType);
+            return rt ? Number(rt.price_per_night).toLocaleString('id-ID') : '0';
+          })()}
         </Typography>
 
         <form onSubmit={handleSubmit}>
@@ -140,9 +169,9 @@ const BookingForm = () => {
             value={formData.roomType}
             onChange={handleChange}
           >
-            <MenuItem value="Standard">Standard</MenuItem>
-            <MenuItem value="Deluxe">Deluxe</MenuItem>
-            <MenuItem value="Suite">Suite</MenuItem>
+            {roomTypes.map(rt => (
+              <MenuItem key={rt.id} value={rt.type}>{rt.type}</MenuItem>
+            ))}
           </TextField>
           <Grid container spacing={2}>
             <Grid item xs={6}>

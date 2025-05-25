@@ -10,6 +10,8 @@ import GlobalStyle from './GlobalStyle';
 import DetailPemesanan from './pages/DetailPemesanan';
 import AdminDashboard from './pages/AdminDashboard';
 import AddHotel from './pages/AddHotel';
+import EditHotel from './pages/EditHotel';
+import EditBooking from './pages/EditBooking'; 
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
           <Route path="/detail-pemesanan/:id" element={<DetailPemesanan />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/hotels/add" element={<AddHotel />} />
+          <Route path="/admin/hotels/edit/:id" element={<EditHotel />} />
+          <Route path="/admin/bookings/edit/:id" element={<EditBooking />} />
         </Routes>
       </Router>
     </>
