@@ -1,5 +1,4 @@
-import Booking from "../models/BookingModels.js";
-import Hotel from "../models/HotelModels.js";  // Import Hotel model
+import { Booking, Hotel } from "../models/associations.js";
 
 // Ambil semua booking
 export const getBookings = async (req, res) => {
@@ -18,6 +17,7 @@ export const getBookings = async (req, res) => {
       check_in_date: b.check_in_date,
       check_out_date: b.check_out_date,
       total_price: b.total_price,
+      hotel_id: b.hotel_id,
       hotel_name: b.Hotel?.name || '-',
     }));
 
@@ -79,12 +79,16 @@ export const getUserBookings = async (req, res) => {
 
     const bookings = await Booking.findAll({
       where: { user_id },
-      include: [{ model: Hotel, attributes: ['name'] }],
-      order: [['created_at', 'DESC']],
+      include: [{
+        model: Hotel,
+        attributes: ["id", "name"], // name akan masuk ke b.Hotel.name
+      }],
+      order: [["created_at", "DESC"]],
     });
 
     const formatted = bookings.map(b => ({
       id: b.id,
+      hotel_id: b.hotel_id,
       guest_name: b.guest_name,
       guest_email: b.guest_email,
       guest_phone: b.guest_phone,
@@ -92,7 +96,7 @@ export const getUserBookings = async (req, res) => {
       check_in_date: b.check_in_date,
       check_out_date: b.check_out_date,
       total_price: b.total_price,
-      hotel_name: b.Hotel?.name || '-',
+      hotel_name: b.Hotel?.name || "-", // ambil dari b.Hotel.name
     }));
 
     res.json(formatted);

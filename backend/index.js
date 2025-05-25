@@ -5,6 +5,7 @@ import db from "./config/database.js";
 import userRoutes from "./routes/userRoutes.js";
 import hotelRoutes from "./routes/hotelRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
+import "./models/associations.js";
 
 const app = express();
 

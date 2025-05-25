@@ -1,7 +1,5 @@
 import { DataTypes } from "sequelize";
 import db from "../config/database.js";
-import User from "./UserModel.js";
-import Hotel from "./HotelModels.js";
 
 const Booking = db.define("bookings", {
   id: {
@@ -12,20 +10,10 @@ const Booking = db.define("bookings", {
   user_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    references: {
-      model: User,
-      key: "id",
-    },
-    onDelete: "CASCADE",
   },
   hotel_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    references: {
-      model: Hotel,
-      key: "id",
-    },
-    onDelete: "CASCADE",
   },
   guest_name: {
     type: DataTypes.STRING,
@@ -60,9 +48,5 @@ const Booking = db.define("bookings", {
   createdAt: "created_at",
   updatedAt: "updated_at",
 });
-
-// Setelah Booking terdefinisi, baru buat relasi
-Booking.belongsTo(Hotel, { foreignKey: "hotel_id" });
-Booking.belongsTo(User, { foreignKey: "user_id" });
 
 export default Booking;

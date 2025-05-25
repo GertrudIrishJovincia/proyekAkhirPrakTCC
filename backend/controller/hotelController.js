@@ -1,6 +1,7 @@
 import Hotel from "../models/HotelModels.js";
 import Booking from "../models/BookingModels.js";
 
+// ✅ Ambil semua hotel
 export const getHotels = async (req, res) => {
   try {
     const hotels = await Hotel.findAll();
@@ -11,15 +12,48 @@ export const getHotels = async (req, res) => {
   }
 };
 
+// ✅ Ambil hotel berdasarkan ID
+export const getHotelById = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const hotel = await Hotel.findByPk(id);
+
+    if (!hotel) {
+      return res.status(404).json({ message: "Hotel tidak ditemukan" });
+    }
+
+    res.json(hotel);
+  } catch (error) {
+    console.error("Gagal ambil hotel:", error.message);
+    res.status(500).json({ message: "Gagal mengambil data hotel" });
+  }
+};
+
+// ✅ Tambah hotel baru
 export const createHotel = async (req, res) => {
   try {
-    const { name, address, price_per_night, facilities, rooms_available, image_url } = req.body;
+    const {
+      name,
+      address,
+      price_per_night,
+      facilities,
+      rooms_available,
+      image_url,
+    } = req.body;
 
     if (!name || !address || !price_per_night || rooms_available == null) {
       return res.status(400).json({ msg: "Field wajib diisi" });
     }
 
-    const newHotel = await Hotel.create({ name, address, price_per_night, facilities, rooms_available, image_url });
+    const newHotel = await Hotel.create({
+      name,
+      address,
+      price_per_night,
+      facilities,
+      rooms_available,
+      image_url,
+    });
+
     res.status(201).json({ msg: "Hotel berhasil dibuat", hotel: newHotel });
   } catch (error) {
     console.error(error.message);
@@ -27,13 +61,17 @@ export const createHotel = async (req, res) => {
   }
 };
 
+// ✅ Hapus hotel (dan semua booking terkait)
 export const deleteHotel = async (req, res) => {
   try {
     const id = req.params.id;
+
     // Hapus booking terkait dulu
     await Booking.destroy({ where: { hotel_id: id } });
+
     // Baru hapus hotel
     const deleted = await Hotel.destroy({ where: { id } });
+
     if (deleted) {
       res.json({ message: "Hotel berhasil dihapus" });
     } else {
@@ -45,10 +83,12 @@ export const deleteHotel = async (req, res) => {
   }
 };
 
+// ✅ Update hotel
 export const updateHotel = async (req, res) => {
   try {
     const id = req.params.id;
     const hotel = await Hotel.findByPk(id);
+
     if (!hotel) {
       return res.status(404).json({ msg: "Hotel tidak ditemukan" });
     }
@@ -61,4 +101,3 @@ export const updateHotel = async (req, res) => {
     res.status(500).json({ msg: "Terjadi kesalahan server" });
   }
 };
-

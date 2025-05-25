@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -9,14 +9,41 @@ import {
   Divider,
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
+import axios from "../axiosInstance"; // Pastikan path ini benar
 
 const DetailPemesanan = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
-  // Data detail dikirim via state dari halaman RiwayatPemesanan
-  // Jika tidak ada data, bisa redirect atau tampilkan pesan error
   const data = location.state || null;
+
+  const [hotelName, setHotelName] = useState("");
+
+  useEffect(() => {
+    console.log("DATA:", data); // 🟡 Cek apakah hotel_id tersedia
+
+    const fetchHotelName = async () => {
+      if (!data || !data.hotel_id) {
+        console.warn("hotel_id tidak tersedia");
+        return;
+      }
+
+      try {
+        const res = await axios.get(`/api/hotels/${data.hotel_id}`);
+        console.log("RESPON HOTEL:", res.data); // 🟢 Lihat bentuk respons
+
+        // Sesuaikan dengan bentuk respons backend kamu
+        setHotelName(res.data.name || "Tidak diketahui");
+      } catch (error) {
+        console.error("Gagal mengambil data hotel:", error);
+        setHotelName("Tidak diketahui");
+      }
+    };
+
+    fetchHotelName();
+  }, [data]);
+
+  const formatPrice = (price) =>
+    price.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
 
   if (!data) {
     return (
@@ -32,9 +59,6 @@ const DetailPemesanan = () => {
       </Container>
     );
   }
-
-  const formatPrice = (price) =>
-    price.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
 
   return (
     <Container maxWidth="sm" sx={{ py: 6 }}>
@@ -56,35 +80,43 @@ const DetailPemesanan = () => {
             <Typography variant="subtitle1" fontWeight="bold" color="#6b4e1a">
               Hotel
             </Typography>
-            <Typography>{data.hotelName}</Typography>
+            <Typography>{hotelName}</Typography>
           </Box>
 
           <Box sx={{ mb: 2 }}>
             <Typography variant="subtitle1" fontWeight="bold" color="#6b4e1a">
               Nama Pemesan
             </Typography>
-            <Typography>{data.customerName || "N/A"}</Typography>
+            <Typography>{data.guest_name || "N/A"}</Typography>
           </Box>
 
           <Box sx={{ mb: 2 }}>
             <Typography variant="subtitle1" fontWeight="bold" color="#6b4e1a">
               Tipe Kamar
             </Typography>
-            <Typography>{data.roomType}</Typography>
+            <Typography>{data.room_type}</Typography>
           </Box>
 
           <Box sx={{ mb: 2, display: "flex", justifyContent: "space-between" }}>
             <Box>
-              <Typography variant="subtitle1" fontWeight="bold" color="#6b4e1a">
+              <Typography
+                variant="subtitle1"
+                fontWeight="bold"
+                color="#6b4e1a"
+              >
                 Check-in
               </Typography>
-              <Typography>{data.checkIn}</Typography>
+              <Typography>{data.check_in_date}</Typography>
             </Box>
             <Box>
-              <Typography variant="subtitle1" fontWeight="bold" color="#6b4e1a">
+              <Typography
+                variant="subtitle1"
+                fontWeight="bold"
+                color="#6b4e1a"
+              >
                 Check-out
               </Typography>
-              <Typography>{data.checkOut}</Typography>
+              <Typography>{data.check_out_date}</Typography>
             </Box>
           </Box>
 
@@ -93,7 +125,7 @@ const DetailPemesanan = () => {
               Total Harga
             </Typography>
             <Typography fontWeight="bold" color="#7a6520" fontSize="1.2rem">
-              {formatPrice(data.totalPrice)}
+              {formatPrice(data.total_price)}
             </Typography>
           </Box>
 

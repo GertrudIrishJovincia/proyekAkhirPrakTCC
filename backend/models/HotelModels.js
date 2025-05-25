@@ -20,7 +20,7 @@ const Hotel = db.define("hotels", {
     allowNull: false,
   },
   facilities: {
-    type: DataTypes.TEXT, // bisa simpan JSON string di sini
+    type: DataTypes.TEXT,
     allowNull: true,
   },
   rooms_available: {

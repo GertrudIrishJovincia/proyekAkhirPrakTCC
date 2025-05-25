@@ -43,7 +43,14 @@ const RiwayatPemesanan = () => {
   };
 
   const handleViewDetail = (item) => {
-    navigate(`/detail-pemesanan/${item.id}`, { state: item });
+    console.log("Navigasi ke detail dengan:", item); // ⬅️ Tambah ini
+
+    navigate(`/detail-pemesanan/${item.id}`, {
+      state: {
+        ...item,
+        hotel_id: item.hotel_id,
+      },
+    });
   };
 
   return (
