@@ -25,7 +25,7 @@ const Login = () => {
     const response = await axios.post(`${BASE_URL}/api/users/login`, formData);
     console.log('Login response:', response.data);
 
-    localStorage.setItem('token', response.data.token || 'dummy');
+    localStorage.setItem('token', response.data.accessToken);
     localStorage.setItem('role', response.data.user.role);
     localStorage.setItem('userId', response.data.user.id);  // Pastikan ini ada
 

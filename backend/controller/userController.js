@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import User from "../models/UserModel.js";
 
 export const getUserById = async (req, res) => {
@@ -65,6 +66,14 @@ export const loginUser = async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(400).json({ msg: "Password salah" });
 
+    // Generate token JWT setelah validasi berhasil
+    const accessToken = jwt.sign(
+      { userId: user.id, role: user.role },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    // Kirim response beserta token
     res.status(200).json({
       msg: "Login berhasil",
       user: {
@@ -73,6 +82,7 @@ export const loginUser = async (req, res) => {
         email: user.email,
         role: user.role,
       },
+      accessToken,  // token dikirim di sini
     });
   } catch (error) {
     console.error(error);
