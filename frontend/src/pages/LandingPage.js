@@ -17,6 +17,7 @@ import {
   Button,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { BASE_URL } from "../utils";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const LandingPage = () => {
     // Ambil userId dari localStorage
     const userId = localStorage.getItem("userId");
     if (userId) {
-      axios.get(`http://localhost:5000/api/users/${userId}`)
+      axios.get(`${BASE_URL}/api/users/${userId}`)
         .then(res => {
           if (res.data && res.data.name) {
             setUserName(res.data.name);
@@ -40,7 +41,7 @@ const LandingPage = () => {
     }
 
     // Fetch data hotel
-    axios.get('http://localhost:5000/api/hotels')
+    axios.get(`${BASE_URL}/api/hotels`)
       .then(response => {
         setHotels(response.data);
       })

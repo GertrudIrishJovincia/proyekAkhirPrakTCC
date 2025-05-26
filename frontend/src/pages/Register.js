@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from '../axiosInstance';
+import { BASE_URL } from "../utils";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -29,7 +30,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
   e.preventDefault();
   try {
-    await axios.post('/api/users/register', formData);
+    await axios.post(`${BASE_URL}/api/users/register`, formData);
     alert('Registrasi berhasil!');
     navigate('/');
   } catch (error) {

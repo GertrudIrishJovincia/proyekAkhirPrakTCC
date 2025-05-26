@@ -11,6 +11,7 @@ import {
   Divider,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../utils";
 
 const RiwayatPemesanan = () => {
   const navigate = useNavigate();
@@ -25,7 +26,7 @@ const RiwayatPemesanan = () => {
           navigate("/");
           return;
         }
-        const res = await axios.get(`/api/userbookings?user_id=${userId}`);
+        const res = await axios.get(`${BASE_URL}/api/userbookings?user_id=${userId}`);
         setHistory(res.data);
       } catch (error) {
         console.error("Gagal ambil riwayat:", error);

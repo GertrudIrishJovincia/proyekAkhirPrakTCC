@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "../axiosInstance"; // Pastikan path ini benar
+import { BASE_URL } from "../utils";
 
 const DetailPemesanan = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const DetailPemesanan = () => {
       }
 
       try {
-        const res = await axios.get(`/api/hotels/${data.hotel_id}`);
+        const res = await axios.get(`${BASE_URL}/api/hotels/${data.hotel_id}`);
         console.log("RESPON HOTEL:", res.data); // 🟢 Lihat bentuk respons
 
         // Sesuaikan dengan bentuk respons backend kamu
