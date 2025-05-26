@@ -31,7 +31,9 @@ const startServer = async () => {
     await db.sync({ alter: true }); // sync db dengan alter untuk update tabel sesuai model
     console.log("Database & tables sudah siap");
 
-    app.listen(5000, () => console.log('Server up running on port 5000...'));
+    const PORT = process.env.PORT || 5000;
+
+    app.listen(PORT, () => console.log(`Server up running on port ${PORT}...`));
   } catch (error) {
     console.error("Gagal sinkronisasi database:", error);
   }
