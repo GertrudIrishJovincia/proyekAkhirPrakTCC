@@ -6,7 +6,7 @@ import userRoutes from "./routes/userRoutes.js";
 import hotelRoutes from "./routes/hotelRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import roomTypeRoutes from "./routes/roomTypeRoutes.js";
-import { verifyToken, isAdmin } from './verifyToken.js';
+// import { verifyToken, isAdmin } from './middleware/verifyToken.js';
 
 const app = express();
 
