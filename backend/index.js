@@ -9,7 +9,6 @@ import roomTypeRoutes from "./routes/roomTypeRoutes.js";
 import dotenv from 'dotenv';
 
 dotenv.config();
-// import { verifyToken, isAdmin } from './middleware/verifyToken.js';
 
 const app = express();
 
@@ -32,16 +31,19 @@ app.use(cors({
 
 app.use(express.json());
 
-// Proteksi route user di userRoutes.js dengan middleware verifyToken, isAdmin
 app.use("/api/users", userRoutes);
 app.use("/api/hotels", hotelRoutes);
 app.use("/api", bookingRoutes);
 app.use("/api", roomTypeRoutes);
 
 app.get('/health', (req, res) => res.status(200).send('OK'));
+app.get('/', (req, res) => res.send('Server is up'));
 
 const startServer = async () => {
   try {
+    console.log('Raw DB_HOST:', JSON.stringify(process.env.DB_HOST));
+    console.log('Trimmed DB_HOST:', process.env.DB_HOST ? process.env.DB_HOST.trim() : '');
+
     console.log("Mulai sinkronisasi database...");
     await db.sync({ alter: true });
     console.log("Database & tables sudah siap");
@@ -49,14 +51,10 @@ const startServer = async () => {
     const PORT = process.env.PORT || 5000;
     console.log(`Server akan mulai listen di port ${PORT}...`);
 
-    app.get('/', (req, res) => res.send('Server is up'));
-
     app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
   } catch (error) {
     console.error("Gagal sinkronisasi database:", error);
   }
 };
-
-
 
 startServer();
