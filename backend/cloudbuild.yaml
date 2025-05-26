@@ -15,7 +15,7 @@ steps:
     - --image
     - gcr.io/$PROJECT_ID/proyekakhirpraktcc
     - --port
-    - '5000'   
+    - '8080'   
     - --region
     - us-central1
     - --allow-unauthenticated

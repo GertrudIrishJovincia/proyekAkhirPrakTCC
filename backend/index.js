@@ -55,7 +55,7 @@ const startServer = async () => {
     await db.sync({ alter: true });
     console.log("Database & tables sudah siap");
 
-    const PORT = process.env.PORT || 5000;
+    const PORT = process.env.PORT || 8080;
     console.log(`Server akan mulai listen di port ${PORT}...`);
 
     app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
