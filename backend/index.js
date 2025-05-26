@@ -52,8 +52,9 @@ const startServer = async () => {
     console.log('Trimmed DB_HOST:', process.env.DB_HOST ? process.env.DB_HOST.trim() : '');
 
     console.log("Mulai sinkronisasi database...");
-    await db.sync({ alter: true });
-    console.log("Database & tables sudah siap");
+    // Comment sementara untuk debugging koneksi DB:
+    // await db.sync({ alter: true });
+    console.log("Database & tables sudah siap (skip sync untuk sementara)");
 
     const PORT = process.env.PORT || 8080;
     console.log(`Server akan mulai listen di port ${PORT}...`);
@@ -61,6 +62,9 @@ const startServer = async () => {
     app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
   } catch (error) {
     console.error("Gagal sinkronisasi database:", error);
+    // Supaya server tetap jalan walaupun gagal sync DB:
+    const PORT = process.env.PORT || 8080;
+    app.listen(PORT, () => console.log(`Listening on port ${PORT} walau gagal sync DB`));
   }
 };
 
