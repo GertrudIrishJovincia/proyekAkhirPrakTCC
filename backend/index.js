@@ -6,22 +6,21 @@ import userRoutes from "./routes/userRoutes.js";
 import hotelRoutes from "./routes/hotelRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import roomTypeRoutes from "./routes/roomTypeRoutes.js";
+import dotenv from 'dotenv';
 
+dotenv.config();
+// import { verifyToken, isAdmin } from './middleware/verifyToken.js';
 
 const app = express();
 
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3002",
-  // "https://8080-cs-815230240529-default.cs-asia-southeast1-seal.cloudshell.dev/"
 ];
-
 
 app.use(cors({
   origin: function(origin, callback) {
-    console.log("Origin request:", origin);
     if (!origin) return callback(null, true);
-
     if (allowedOrigins.indexOf(origin) === -1) {
       const msg = "The CORS policy for this site does not allow access from the specified Origin.";
       return callback(new Error(msg), false);
@@ -31,26 +30,23 @@ app.use(cors({
   credentials: true,
 }));
 
-
 app.use(express.json());
 
-// Rute harus dikasih prefix API agar terstruktur dan menghindari bentrok
+// Proteksi route user di userRoutes.js dengan middleware verifyToken, isAdmin
 app.use("/api/users", userRoutes);
 app.use("/api/hotels", hotelRoutes);
-app.use("/api", bookingRoutes);// bookingRoutes sudah punya prefix '/createbooking' dan '/bookings'
+app.use("/api", bookingRoutes);
 app.use("/api", roomTypeRoutes);
-
-// Hapus duplikasi penggunaan hotelRoutes tanpa prefix:
-// app.use(hotelRoutes); // ini bisa dihapus
 
 const startServer = async () => {
   try {
-    await db.sync({ alter: true }); // sync db dengan alter untuk update tabel sesuai model
+    await db.sync({ alter: true });
     console.log("Database & tables sudah siap");
 
     const PORT = process.env.PORT || 5000;
+app.get('/', (req, res) => res.send('Server is up'));
+app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
-    app.listen(PORT, () => console.log(`Server up running on port ${PORT}...`));
   } catch (error) {
     console.error("Gagal sinkronisasi database:", error);
   }
