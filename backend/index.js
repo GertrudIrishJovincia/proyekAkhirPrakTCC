@@ -12,16 +12,17 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://8080-cs-815230240529-default.cs-asia-southeast1-seal.cloudshell.dev"
+  "http://localhost:3002"
+  // "https://8080-cs-815230240529-default.cs-asia-southeast1-seal.cloudshell.dev"
 ];
 
 
 app.use(cors({
-  origin: function(origin, callback){
-    // kalau request tanpa origin (misal dari Postman), langsung allow
-    if(!origin) return callback(null, true);
+  origin: function(origin, callback) {
+    console.log("Origin request:", origin);
+    if (!origin) return callback(null, true);
 
-    if(allowedOrigins.indexOf(origin) === -1){
+    if (allowedOrigins.indexOf(origin) === -1) {
       const msg = "The CORS policy for this site does not allow access from the specified Origin.";
       return callback(new Error(msg), false);
     }
@@ -29,6 +30,7 @@ app.use(cors({
   },
   credentials: true,
 }));
+
 
 app.use(express.json());
 
