@@ -6,6 +6,9 @@ import userRoutes from "./routes/userRoutes.js";
 import hotelRoutes from "./routes/hotelRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import roomTypeRoutes from "./routes/roomTypeRoutes.js";
+import dotenv from 'dotenv';
+
+dotenv.config();
 // import { verifyToken, isAdmin } from './middleware/verifyToken.js';
 
 const app = express();
