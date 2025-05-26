@@ -42,19 +42,21 @@ app.get('/health', (req, res) => res.status(200).send('OK'));
 
 const startServer = async () => {
   try {
+    console.log("Mulai sinkronisasi database...");
     await db.sync({ alter: true });
     console.log("Database & tables sudah siap");
 
     const PORT = process.env.PORT || 5000;
+    console.log(`Server akan mulai listen di port ${PORT}...`);
 
     app.get('/', (req, res) => res.send('Server is up'));
-    console.log(`Server akan mulai listen di port ${PORT}...`);
 
     app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
   } catch (error) {
     console.error("Gagal sinkronisasi database:", error);
   }
 };
+
 
 
 startServer();
