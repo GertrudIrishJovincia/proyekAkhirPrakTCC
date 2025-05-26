@@ -1,19 +1,14 @@
 runtime: nodejs20
+service: proyekakhirpraktcc-be  
 instance_class: F1
 
 handlers:
-  # Tangani file statis dengan tepat
-  - url: /static
-    static_dir: build/static
-
-  - url: /(.*\.(js|css|map|json|png|jpg|jpeg|gif|ico|svg|webp))
-    static_files: build/\1
-    upload: build/.*\.(js|css|map|json|png|jpg|jpeg|gif|ico|svg|webp)
-
-  # Fallback: semua route selain file → index.html (untuk React Router)
-  - url: /.*
+  - url: /
     static_files: build/index.html
     upload: build/index.html
 
-env_variables:
-  NODE_ENV: production
+  - url: /(.*)
+    static_files: build/\1
+    upload: build/(.*)
+
+default_expiration: "1h"
