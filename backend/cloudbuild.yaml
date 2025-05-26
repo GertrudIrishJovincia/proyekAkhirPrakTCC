@@ -1,0 +1,30 @@
+substitutions:
+  _ENV: "gs://projectakhirhotels_193_197/.env"
+
+steps:
+  - name: "gcr.io/cloud-builders/gsutil"
+    args: ["cp", "${_ENV}", ".env"]
+
+  - name: 'gcr.io/cloud-builders/docker'
+    dir: 'backend'
+    args: ['build', '-t', 'gcr.io/f-12-450706/proyekakhirpraktcc', '.']
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/f-12-450706/proyekakhirpraktcc']
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      [
+        'run', 'deploy', 'proyekakhirpraktcc',
+        '--image', 'gcr.io/f-12-4507061/proyekakhirpraktcc',
+        '--region', 'us-central1',
+        '--platform', 'managed',
+        '--allow-unauthenticated'
+      ]
+
+images:
+  - 'gcr.io/f-12-4507061/proyekakhirpraktcc'
+
+options:
+  logging: CLOUD_LOGGING_ONLY

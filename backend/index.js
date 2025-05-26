@@ -12,8 +12,8 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "http://localhost:3002"
-  // "https://8080-cs-815230240529-default.cs-asia-southeast1-seal.cloudshell.dev"
+  "http://localhost:3002",
+  // "https://8080-cs-815230240529-default.cs-asia-southeast1-seal.cloudshell.dev/"
 ];
 
 
