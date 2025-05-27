@@ -50,25 +50,31 @@ app.get('/health', (req, res) => res.status(200).send('OK'));
 app.get('/', (req, res) => res.send('Server is up'));
 
 const startServer = async () => {
+  const PORT = process.env.PORT || 8080;
+
   try {
-    console.log('Raw DB_HOST:', JSON.stringify(process.env.DB_HOST));
-    console.log('Trimmed DB_HOST:', process.env.DB_HOST ? process.env.DB_HOST.trim() : '');
+    console.log("Raw DB_HOST:", JSON.stringify(process.env.DB_HOST));
+    console.log("Trimmed DB_HOST:", process.env.DB_HOST ? process.env.DB_HOST.trim() : '');
 
     console.log("Mulai sinkronisasi database...");
-    // Comment sementara untuk debugging koneksi DB:
-    // await db.sync({ alter: true });
-    console.log("Database & tables sudah siap (skip sync untuk sementara)");
+    await db.authenticate(); // ⬅️ Gunakan authenticate() untuk test koneksi saja
+    // await db.sync({ alter: true }); // Aktifkan ini hanya jika DB ready
+    console.log("Koneksi database berhasil.");
 
-    const PORT = process.env.PORT || 8080;
-    console.log(`Server akan mulai listen di port ${PORT}...`);
-
-    app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
   } catch (error) {
-    console.error("Gagal sinkronisasi database:", error);
-    // Supaya server tetap jalan walaupun gagal sync DB:
-    const PORT = process.env.PORT || 8080;
-    app.listen(PORT, () => console.log(`Listening on port ${PORT} walau gagal sync DB`));
+    console.error("❌ Gagal koneksi/sinkronisasi database:", error.message);
+  } finally {
+    app.listen(PORT, () => console.log(`✅ Server tetap listen di port ${PORT}`));
   }
 };
+
+
+console.log("====== ENVIRONMENT VARIABLES ======");
+console.log("DB_NAME:", process.env.DB_NAME);
+console.log("DB_USER:", process.env.DB_USER);
+console.log("DB_PASS:", process.env.DB_PASS);
+console.log("DB_HOST:", process.env.DB_HOST);
+console.log("PORT:", process.env.PORT);
+console.log("===================================");
 
 startServer();
