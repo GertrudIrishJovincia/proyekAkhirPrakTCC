@@ -7,7 +7,6 @@ import hotelRoutes from "./routes/hotelRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import roomTypeRoutes from "./routes/roomTypeRoutes.js";
 import dotenv from 'dotenv';
-import cors from "cors";
 
 dotenv.config();
 
@@ -49,26 +48,6 @@ app.use("/api", roomTypeRoutes);
 app.get('/health', (req, res) => res.status(200).send('OK'));
 app.get('/', (req, res) => res.send('Server is up'));
 
-const startServer = async () => {
-  const PORT = process.env.PORT || 8080;
-
-  try {
-    console.log("Raw DB_HOST:", JSON.stringify(process.env.DB_HOST));
-    console.log("Trimmed DB_HOST:", process.env.DB_HOST ? process.env.DB_HOST.trim() : '');
-
-    console.log("Mulai sinkronisasi database...");
-    await db.authenticate(); // ⬅️ Gunakan authenticate() untuk test koneksi saja
-    // await db.sync({ alter: true }); // Aktifkan ini hanya jika DB ready
-    console.log("Koneksi database berhasil.");
-
-  } catch (error) {
-    console.error("❌ Gagal koneksi/sinkronisasi database:", error.message);
-  } finally {
-    app.listen(PORT, () => console.log(`✅ Server tetap listen di port ${PORT}`));
-  }
-};
-
-
 console.log("====== ENVIRONMENT VARIABLES ======");
 console.log("DB_NAME:", process.env.DB_NAME);
 console.log("DB_USER:", process.env.DB_USER);
@@ -76,5 +55,24 @@ console.log("DB_PASS:", process.env.DB_PASS);
 console.log("DB_HOST:", process.env.DB_HOST);
 console.log("PORT:", process.env.PORT);
 console.log("===================================");
+
+const startServer = async () => {
+  const PORT = process.env.PORT || 8080;
+
+  try {
+    console.log("Raw DB_HOST:", JSON.stringify(process.env.DB_HOST));
+    console.log("Trimmed DB_HOST:", process.env.DB_HOST ? process.env.DB_HOST.trim() : '');
+
+    console.log("📡 Mencoba koneksi ke database...");
+    await db.authenticate();
+    console.log("✅ Koneksi database berhasil!");
+    // await db.sync(); // hanya jika kamu yakin DB stabil
+
+  } catch (error) {
+    console.error("❌ Gagal koneksi/sinkronisasi database:", error); // ubah jadi tampilkan full error
+  } finally {
+    app.listen(PORT, () => console.log(`🚀 Server tetap listen di port ${PORT}`));
+  }
+};
 
 startServer();
