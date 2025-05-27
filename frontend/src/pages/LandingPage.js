@@ -161,7 +161,7 @@ const LandingPage = () => {
             <Box mt={2}>
               <Typography><strong>Nama Hotel:</strong> {selectedHotel.name}</Typography>
               <Typography><strong>Alamat:</strong> {selectedHotel.address}</Typography>
-              <Typography><strong>Biaya per malam:</strong> Rp{selectedHotel.price_per_night}</Typography>
+              <Typography><strong>Biaya per malam:</strong> Rp{selectedHotel.price_min} - Rp{selectedHotel.price_max}</Typography>
               <Typography><strong>Fasilitas:</strong> {selectedHotel.facilities}</Typography>
               <Typography><strong>Ketersediaan kamar:</strong> {selectedHotel.rooms_available} kamar</Typography>
             </Box>
