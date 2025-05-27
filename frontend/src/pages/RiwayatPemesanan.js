@@ -11,12 +11,17 @@ import {
   Divider,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-// import { BASE_URL } from "../utils";
 
 const RiwayatPemesanan = () => {
   const navigate = useNavigate();
+
+  // State untuk history pemesanan
   const [history, setHistory] = useState([]);
 
+  // State untuk cache nama hotel per hotel_id
+  const [hotelNames, setHotelNames] = useState({});
+
+  // Ambil data riwayat pemesanan user
   useEffect(() => {
     const fetchHistory = async () => {
       try {
@@ -36,6 +41,34 @@ const RiwayatPemesanan = () => {
     fetchHistory();
   }, [navigate]);
 
+  // Fungsi untuk fetch nama hotel berdasarkan hotel_id dan simpan ke state hotelNames
+  const fetchHotelName = async (hotelId) => {
+    if (!hotelId) return "Nama hotel tidak tersedia";
+    if (hotelNames[hotelId]) return hotelNames[hotelId]; // Sudah ada cache
+
+    try {
+      const res = await axios.get(`/api/hotels/${hotelId}`);
+      const name = res.data.name || "Nama hotel tidak tersedia";
+      setHotelNames(prev => ({ ...prev, [hotelId]: name }));
+      return name;
+    } catch {
+      return "Nama hotel tidak tersedia";
+    }
+  };
+
+  // useEffect untuk fetch nama semua hotel unik setelah history didapat
+  useEffect(() => {
+    if (history.length === 0) return;
+
+    const uniqueHotelIds = [...new Set(history.map(item => item.hotel_id))];
+
+    uniqueHotelIds.forEach(async (hotelId) => {
+      if (!hotelNames[hotelId]) {
+        await fetchHotelName(hotelId);
+      }
+    });
+  }, [history]); // Jangan lupa tambahkan hotelNames juga sebagai dependency kalau mau update terus
+
   const formatPrice = (price) =>
     price.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
 
@@ -44,8 +77,6 @@ const RiwayatPemesanan = () => {
   };
 
   const handleViewDetail = (item) => {
-    console.log("Navigasi ke detail dengan:", item); // ⬅️ Tambah ini
-
     navigate(`/detail-pemesanan/${item.id}`, {
       state: {
         ...item,
@@ -73,7 +104,7 @@ const RiwayatPemesanan = () => {
                   <CardContent>
                     <Box sx={{ bgcolor: "rgba(93,74,26,0.15)", borderRadius: 1, p: 1, mb: 2 }}>
                       <Typography variant="h6" fontWeight="bold" color="#5d4a1a" gutterBottom>
-                        {item.hotel_name}
+                        {hotelNames[item.hotel_id] || "Loading..."}
                       </Typography>
                     </Box>
 
