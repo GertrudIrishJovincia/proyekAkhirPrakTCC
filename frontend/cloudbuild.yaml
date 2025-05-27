@@ -10,9 +10,6 @@ steps:
         else
           echo "Skipping npm install, node_modules exists."
         fi
-    volumes:
-      - name: "npm-cache"
-        path: /root/.npm
 
   - name: "gcr.io/cloud-builders/npm"
     entrypoint: bash
@@ -20,17 +17,9 @@ steps:
       - -c
       - |
         npm run build
-    volumes:
-      - name: "npm-cache"
-        path: /root/.npm
 
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
-    entrypoint: gcloud
     args: ["app", "deploy", "--quiet"]
-
-volumes:
-  - name: "npm-cache"
-    path: /root/.npm
 
 options:
   logging: CLOUD_LOGGING_ONLY
