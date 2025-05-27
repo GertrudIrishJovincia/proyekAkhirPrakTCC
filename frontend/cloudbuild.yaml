@@ -1,6 +1,6 @@
 steps:
   - name: "gcr.io/cloud-builders/npm"
-    dir: "frontend"        # Tambahkan ini supaya npm jalan di folder frontend
+    dir: "frontend"
     entrypoint: "bash"
     args:
       - "-c"
@@ -13,7 +13,7 @@ steps:
         fi
 
   - name: "gcr.io/cloud-builders/npm"
-    dir: "frontend"        # Tambahkan ini supaya npm run build di folder frontend
+    dir: "frontend"
     entrypoint: "bash"
     args:
       - "-c"
@@ -22,8 +22,7 @@ steps:
 
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: "gcloud"
-    args: ["app", "deploy", "--quiet"]
-
+    args: ["app", "deploy", "frontend/app.yaml", "--quiet"]
 
 options:
   logging: CLOUD_LOGGING_ONLY
