@@ -7,6 +7,7 @@ import hotelRoutes from "./routes/hotelRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import roomTypeRoutes from "./routes/roomTypeRoutes.js";
 import dotenv from 'dotenv';
+import cors from "cors";
 
 dotenv.config();
 
@@ -22,6 +23,8 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:3000",
   "http://localhost:3002",
+  "https://proyekakhirpraktcc-174534490336.us-central1.run.app",
+  "https://proyekakhirpraktcc-fe-dot-f-12-450706.uc.r.appspot.com/"
 ];
 
 app.use(cors({

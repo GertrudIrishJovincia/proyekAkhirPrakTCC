@@ -60,23 +60,20 @@ export const getAllUsers = async (req, res) => {
 
 export const loginUser = async (req, res) => {
   try {
-    console.log("Body request login:", req.body);
-
     const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ msg: "Email dan password wajib diisi" });
-    }
+    console.log("Login attempt:", email);
 
     const user = await User.findOne({ where: { email } });
-    if (!user) return res.status(404).json({ msg: "User tidak ditemukan" });
+    if (!user) {
+      console.log("User tidak ditemukan:", email);
+      return res.status(404).json({ msg: "User tidak ditemukan" });
+    }
 
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return res.status(400).json({ msg: "Password salah" });
-
-    if (!process.env.ACCESS_TOKEN_SECRET) {
-      console.error("ACCESS_TOKEN_SECRET belum diset di environment");
-      return res.status(500).json({ msg: "Server error: secret token belum diset" });
+    if (!match) {
+      console.log("Password salah untuk user:", email);
+      return res.status(400).json({ msg: "Password salah" });
     }
 
     const accessToken = jwt.sign(
@@ -96,7 +93,7 @@ export const loginUser = async (req, res) => {
       accessToken,
     });
   } catch (error) {
-    console.error("Error di loginUser:", error);
-    res.status(500).json({ msg: "Terjadi kesalahan server" });
+    console.error("Error loginUser:", error);
+    res.status(500).json({ msg: "Server error" });
   }
 };
