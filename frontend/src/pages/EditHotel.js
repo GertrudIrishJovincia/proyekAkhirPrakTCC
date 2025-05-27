@@ -16,7 +16,7 @@ import {
 import { Add, Remove } from '@mui/icons-material';
 import axios from '../axiosInstance';
 import { useNavigate, useParams } from 'react-router-dom';
-import { BASE_URL } from "../utils";
+// import { BASE_URL } from "../utils";
 
 const roomTypeOptions = ['Standard', 'Deluxe', 'Suite'];
 
@@ -40,7 +40,7 @@ export default function EditHotel() {
     const fetchHotelAndRoomTypes = async () => {
       try {
         // Ambil data hotel
-        const resHotel = await axios.get(`${BASE_URL}/api/hotels/${id}`);
+        const resHotel = await axios.get(`/api/hotels/${id}`);
         const hotel = resHotel.data;
 
         setFormData({
@@ -51,7 +51,7 @@ export default function EditHotel() {
         });
 
         // Ambil tipe kamar hotel ini
-        const resRoomTypes = await axios.get(`${BASE_URL}/api/hotels/${id}/roomtypes`);
+        const resRoomTypes = await axios.get(`/api/hotels/${id}/roomtypes`);
         setRoomTypes(resRoomTypes.data || []);
       } catch (error) {
         console.error('Gagal mengambil data hotel atau tipe kamar:', error);
@@ -107,7 +107,7 @@ export default function EditHotel() {
 
     try {
       // Update data hotel
-      await axios.put(`${BASE_URL}/api/hotels/${id}`, {
+      await axios.put(`/api/hotels/${id}`, {
         name: formData.name,
         address: formData.address,
         facilities: formData.facilities,
@@ -118,14 +118,14 @@ export default function EditHotel() {
       for (const rt of roomTypes) {
         if (rt.id) {
           // Jika sudah ada id, update tipe kamar
-          await axios.put(`${BASE_URL}/api/roomtypes/${rt.id}`, {
+          await axios.put(`/api/roomtypes/${rt.id}`, {
             type_name: rt.type,
             price_per_night: Number(rt.price_per_night),
             stock: Number(rt.stock),
           });
         } else {
           // Jika belum ada id, buat tipe kamar baru
-          await axios.post(`${BASE_URL}/api/hotels/${id}/roomtypes`, {
+          await axios.post(`/api/hotels/${id}/roomtypes`, {
             type: rt.type,
             price_per_night: Number(rt.price_per_night),
             stock: Number(rt.stock),

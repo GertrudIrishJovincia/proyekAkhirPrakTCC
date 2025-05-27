@@ -13,7 +13,7 @@ import UserTable from '../components/UserTable';
 import HotelTable from '../components/HotelTable';
 import BookingTable from '../components/BookingTable';
 import { useNavigate } from 'react-router-dom';
-import { BASE_URL } from "../utils";
+// import { BASE_URL } from "../utils";
 
 export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
@@ -29,7 +29,7 @@ export default function AdminDashboard() {
 
   const fetchUsers = async () => {
   try {
-    const res = await axios.get(`${BASE_URL}/api/users`);
+    const res = await axios.get(`/api/users`);
     console.log('Users:', res.data);
     setUsers(res.data);
   } catch (error) {
@@ -39,7 +39,7 @@ export default function AdminDashboard() {
 
 const fetchHotels = async () => {
   try {
-    const res = await axios.get(`${BASE_URL}/api/hotels`);  // panggil endpoint utama
+    const res = await axios.get(`/api/hotels`);  // panggil endpoint utama
     setHotels(res.data);
   } catch (error) {
     console.error('Gagal ambil hotel:', error);
@@ -49,7 +49,7 @@ const fetchHotels = async () => {
 
 const fetchBookings = async () => {
   try {
-    const res = await axios.get(`${BASE_URL}/api/bookings`);
+    const res = await axios.get(`/api/bookings`);
     console.log('Bookings:', res.data);
     setBookings(res.data);
   } catch (error) {
@@ -62,7 +62,7 @@ const fetchBookings = async () => {
   if (!window.confirm("Yakin ingin menghapus hotel ini?")) return;
 
   try {
-    await axios.delete(`${BASE_URL}/api/hotels/${hotelId}`);  // PENTING: pakai prefix /api/hotels
+    await axios.delete(`/api/hotels/${hotelId}`);  // PENTING: pakai prefix /api/hotels
     alert("Hotel berhasil dihapus");
     fetchHotels(); // refresh data hotel setelah hapus
   } catch (error) {

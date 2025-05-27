@@ -9,7 +9,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 import axios from '../axiosInstance';
-import { BASE_URL } from "../utils";
+// import { BASE_URL } from "../utils";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -22,7 +22,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
   e.preventDefault();
   try {
-    const response = await axios.post(`${BASE_URL}/api/users/login`, formData);
+    const response = await axios.post(`/api/users/login`, formData);
     console.log('Login response:', response.data);
 
     localStorage.setItem('token', response.data.accessToken);

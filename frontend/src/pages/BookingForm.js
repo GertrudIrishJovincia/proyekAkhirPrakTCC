@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from '../axiosInstance';
-import { BASE_URL } from "../utils";
+// import { BASE_URL } from "../utils";
 
 const BookingForm = () => {
   const location = useLocation();
@@ -33,7 +33,7 @@ const BookingForm = () => {
   useEffect(() => {
     const fetchRoomTypes = async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/api/hotels/${selectedHotel.id}/roomtypes`);
+        const res = await axios.get(`/api/hotels/${selectedHotel.id}/roomtypes`);
         setRoomTypes(res.data);
         if(res.data.length > 0) {
           setFormData(prev => ({ ...prev, roomType: res.data[0].type }));
@@ -93,7 +93,7 @@ const BookingForm = () => {
       };
       console.log("Payload booking:", payload);
 
-      await axios.post(`${BASE_URL}/api/createbooking`, payload);
+      await axios.post(`/api/createbooking`, payload);
       alert('Booking berhasil dibuat!');
 
       setFormData({

@@ -15,7 +15,7 @@ import {
 import { Add, Remove } from '@mui/icons-material';
 import axios from '../axiosInstance';
 import { useNavigate } from 'react-router-dom';
-import { BASE_URL } from "../utils";
+// import { BASE_URL } from "../utils";
 
 const roomTypeOptions = ['Standard', 'Deluxe', 'Suite'];
 
@@ -70,7 +70,7 @@ export default function AddHotelWithRoomTypes() {
 
     setLoading(true);
     try {
-      const resHotel = await axios.post(`${BASE_URL}/api/hotels`, {
+      const resHotel = await axios.post(`/api/hotels`, {
         name: formData.name,
         address: formData.address,
         facilities: formData.facilities,
@@ -82,7 +82,7 @@ export default function AddHotelWithRoomTypes() {
       const hotelId = resHotel.data.hotel.id;
 
       for (const rt of roomTypes) {
-        await axios.post(`${BASE_URL}/api/hotels/${hotelId}/roomtypes`, {
+        await axios.post(`/api/hotels/${hotelId}/roomtypes`, {
           type: rt.type_name,
           price_per_night: Number(rt.price_per_night),
           stock: Number(rt.stock),
