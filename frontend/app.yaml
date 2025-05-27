@@ -1,13 +1,14 @@
-# Build stage
-FROM node:18-alpine as build
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
+runtime: nodejs20
+service: proyekakhirpraktcc-fe
+instance_class: F1
 
-# Production stage
-FROM nginx:alpine
-COPY --from=build /app/build /usr/share/nginx/html
-EXPOSE 8080
-CMD ["nginx", "-g", "daemon off;"]
+handlers:
+  - url: /
+    static_files: build/index.html
+    upload: build/index.html
+
+  - url: /(.*)
+    static_files: build/\1
+    upload: build/(.*)
+
+default_expiration: "1h"

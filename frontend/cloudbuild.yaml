@@ -1,19 +1,28 @@
 steps:
-  - name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "gcr.io/$PROJECT_ID/proyekakhirpraktcc-fe", "."]
+  - name: "gcr.io/cloud-builders/npm"
     dir: "frontend"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        if [ ! -d "node_modules" ]; then
+          echo "Installing dependencies..."
+          npm ci
+        else
+          echo "Skipping npm install, node_modules exists."
+        fi
 
-  - name: "gcr.io/cloud-builders/docker"
-    args: ["push", "gcr.io/$PROJECT_ID/proyekakhirpraktcc-fe"]
+  - name: "gcr.io/cloud-builders/npm"
+    dir: "frontend"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        npm run build
 
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: "gcloud"
-    args: [
-      "run", "deploy", "proyekakhirpraktcc-fe",
-      "--image", "gcr.io/$PROJECT_ID/proyekakhirpraktcc-fe",
-      "--region", "us-central1",
-      "--platform", "managed",
-      "--allow-unauthenticated"
-    ]
+    args: ["app", "deploy", "frontend/app.yaml", "--quiet"]
+
 options:
-  logging: CLOUD_LOGGING_ONLY
+  logging: CLOUD_LOGGING_ONLY 
