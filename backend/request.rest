@@ -1,29 +1,31 @@
+GET  https://proyekakhirpraktcc-174534490336.us-central1.run.app/api/hotels
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ4MzAzNjcxLCJleHAiOjE3NDgzMDcyNzF9.xEp47m4Xy7nP7AA2sDJVsImrq_p-GLpbkBpgN5gIVvY
 ### REGISTER USER
-POST http://localhost:5000/api/users/register
+POST https://proyekakhirpraktcc-174534490336.us-central1.run.app/api/users/register
 Content-Type: application/json
 
 {
-  "name": "ikhsan",
-  "email": "ikhsan@admin.com",
+  "name": "pipi",
+  "email": "pipi@gmail.com",
   "phone": "08123456789",
-  "password": "ikhsan",
+  "password": "pipi",
   "role": "user"
 }
 
 ###
-POST http://localhost:5000/api/users/login
+POST https://proyekakhirpraktcc-174534490336.us-central1.run.app/api/users/login
 Content-Type: application/json
 
 {
-  "email": "ikhsan@admin.com",
-  "password": "ikhsan"
+  "email": "pipi@gmail.com",
+  "password": "pipi"
 }
 
 ### GET ALL USERS
-GET http://localhost:5000/api/users/
+GET https://proyekakhirpraktcc-174534490336.us-central1.run.app/api/users/
 
 ### CREATE HOTEL
-POST http://localhost:5000/
+POST https://proyekakhirpraktcc-174534490336.us-central1.run.app/
 Content-Type: application/json
 
 {
@@ -36,10 +38,10 @@ Content-Type: application/json
 }
 
 ### GET ALL HOTELS
-GET http://localhost:5000/hotels
+GET https://proyekakhirpraktcc-174534490336.us-central1.run.app/hotels
 
 ### UPDATE HOTEL (misal id = 1)
-PUT http://localhost:5000/1
+PUT https://proyekakhirpraktcc-174534490336.us-central1.run.app/1
 Content-Type: application/json
 
 {
@@ -48,10 +50,10 @@ Content-Type: application/json
 }
 
 ### DELETE HOTEL (misal id = 1)
-DELETE http://localhost:5000/1
+DELETE https://proyekakhirpraktcc-174534490336.us-central1.run.app/1
 
 ### CREATE BOOKING
-POST http://localhost:5000/createbooking
+POST https://proyekakhirpraktcc-174534490336.us-central1.run.app/createbooking
 Content-Type: application/json
 
 {
@@ -67,4 +69,4 @@ Content-Type: application/json
 }
 
 ### GET ALL BOOKINGS
-GET http://localhost:5000/hotels
+GET https://proyekakhirpraktcc-174534490336.us-central1.run.app/hotels
