@@ -19,21 +19,21 @@ process.on('uncaughtException', (err) => {
 
 const app = express();
 
-const allowedOrigins = [
+const allowedOrigins = new Set([
   "http://localhost:3000",
   "http://localhost:3002",
   "https://proyekakhirpraktcc-174534490336.us-central1.run.app",
-  "https://proyekakhirpraktcc-fe-dot-f-12-450706.uc.r.appspot.com/"
-];
+  "https://proyekakhirpraktcc-fe-dot-f-12-450706.uc.r.appspot.com"
+]);
 
 app.use(cors({
   origin: function(origin, callback) {
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = "The CORS policy for this site does not allow access from the specified Origin.";
-      return callback(new Error(msg), false);
+    if (allowedOrigins.has(origin)) {
+      return callback(null, true);
     }
-    return callback(null, true);
+    const msg = `The CORS policy for this site does not allow access from the specified Origin: ${origin}`;
+    return callback(new Error(msg), false);
   },
   credentials: true,
 }));
