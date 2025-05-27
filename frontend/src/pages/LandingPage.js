@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';  // bisa pakai axiosInstance juga kalau sudah ada
+import axios from '../axiosInstance'; // bisa pakai axiosInstance juga kalau sudah ada
 import {
   Box,
   Typography,
