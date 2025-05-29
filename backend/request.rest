@@ -1,5 +1,5 @@
-GET  https://proyekakhirpraktcc-174534490336.us-central1.run.app/api/hotels
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ4MzAzNjcxLCJleHAiOjE3NDgzMDcyNzF9.xEp47m4Xy7nP7AA2sDJVsImrq_p-GLpbkBpgN5gIVvY
+GET  https://proyekakhirpraktcc-174534490336.us-central1.run.app/api/users
+
 ### REGISTER USER
 POST https://proyekakhirpraktcc-174534490336.us-central1.run.app/api/users/register
 Content-Type: application/json

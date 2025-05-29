@@ -5,7 +5,13 @@ import RoomType from "../models/RoomType.js";
 // ✅ Ambil semua hotel
 export const getHotels = async (req, res) => {
   try {
-    const hotels = await Hotel.findAll();
+    const hotels = await Hotel.findAll({
+      include: [{
+        model: RoomType,
+        as: 'room_types', // alias ini penting untuk ditampilkan sebagai `room_types`
+      }]
+    });
+
     res.status(200).json(hotels);
   } catch (error) {
     console.error(error.message);
@@ -32,37 +38,33 @@ export const getHotelById = async (req, res) => {
 
 export const getHotelsWithPriceRange = async (req, res) => {
   try {
-    const hotels = await Hotel.findAll();
+    const hotels = await Hotel.findAll({
+      include: [{
+        model: RoomType,
+        as: "room_types"
+      }]
+    });
 
-    const hotelsWithPriceRange = await Promise.all(hotels.map(async (hotel) => {
-      const roomTypes = await RoomType.findAll({
-        where: { hotel_id: hotel.id },
-        attributes: ['price_per_night', 'stock']
-      });
-
-      const prices = roomTypes
-        .map(rt => Number(rt.price_per_night))
-        .filter(price => !isNaN(price));
-
-      const totalStock = roomTypes.reduce((sum, rt) => sum + rt.stock, 0);
-
-      const price_min = prices.length > 0 ? Math.min(...prices) : null;
-      const price_max = prices.length > 0 ? Math.max(...prices) : null;
+    const hotelsWithRoomData = hotels.map(hotel => {
+      const roomTypes = hotel.room_types || [];
+      const prices = roomTypes.map(rt => Number(rt.price_per_night)).filter(p => !isNaN(p));
+      const totalStock = roomTypes.reduce((sum, rt) => sum + (rt.stock || 0), 0);
 
       return {
         ...hotel.toJSON(),
-        price_min,
-        price_max,
-        rooms_available: totalStock,
+        price_min: prices.length ? Math.min(...prices) : null,
+        price_max: prices.length ? Math.max(...prices) : null,
+        rooms_available: totalStock
       };
-    }));
+    });
 
-    res.json(hotelsWithPriceRange);
+    res.status(200).json(hotelsWithRoomData);
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: "Gagal mengambil data hotel dengan range harga" });
   }
 };
+
 
 
 // ✅ Tambah hotel baru
