@@ -6,22 +6,17 @@ import {
   Typography,
   Grid,
   Card,
-  CardContent,
+  CardMedia,
   Button,
-  Divider,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const RiwayatPemesanan = () => {
   const navigate = useNavigate();
 
-  // State untuk history pemesanan
   const [history, setHistory] = useState([]);
+  const [hotelDetails, setHotelDetails] = useState({}); // simpan data hotel lengkap per hotel_id
 
-  // State untuk cache nama hotel per hotel_id
-  const [hotelNames, setHotelNames] = useState({});
-
-  // Ambil data riwayat pemesanan user
   useEffect(() => {
     const fetchHistory = async () => {
       try {
@@ -41,33 +36,33 @@ const RiwayatPemesanan = () => {
     fetchHistory();
   }, [navigate]);
 
-  // Fungsi untuk fetch nama hotel berdasarkan hotel_id dan simpan ke state hotelNames
-  const fetchHotelName = async (hotelId) => {
-    if (!hotelId) return "Nama hotel tidak tersedia";
-    if (hotelNames[hotelId]) return hotelNames[hotelId]; // Sudah ada cache
+  // Fungsi untuk fetch detail lengkap hotel per hotelId
+  const fetchHotelDetail = async (hotelId) => {
+    if (!hotelId) return null;
+    if (hotelDetails[hotelId]) return hotelDetails[hotelId];
 
     try {
       const res = await axios.get(`/api/hotels/${hotelId}`);
-      const name = res.data.name || "Nama hotel tidak tersedia";
-      setHotelNames(prev => ({ ...prev, [hotelId]: name }));
-      return name;
+      setHotelDetails((prev) => ({ ...prev, [hotelId]: res.data }));
+      return res.data;
     } catch {
-      return "Nama hotel tidak tersedia";
+      return null;
     }
   };
 
-  // useEffect untuk fetch nama semua hotel unik setelah history didapat
+  // Setelah dapat history, fetch detail semua hotel unik
   useEffect(() => {
     if (history.length === 0) return;
 
-    const uniqueHotelIds = [...new Set(history.map(item => item.hotel_id))];
+    const uniqueHotelIds = [...new Set(history.map((item) => item.hotel_id))];
 
     uniqueHotelIds.forEach(async (hotelId) => {
-      if (!hotelNames[hotelId]) {
-        await fetchHotelName(hotelId);
+      if (!hotelDetails[hotelId]) {
+        await fetchHotelDetail(hotelId);
       }
     });
-  }, [history]); // Jangan lupa tambahkan hotelNames juga sebagai dependency kalau mau update terus
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [history]);
 
   const formatPrice = (price) =>
     price.toLocaleString("id-ID", { style: "currency", currency: "IDR" });
@@ -86,55 +81,190 @@ const RiwayatPemesanan = () => {
   };
 
   return (
-    <Box sx={{ bgcolor: "#715737", minHeight: "100vh", py: 6, px: 2, display: "flex", justifyContent: "center" }}>
-      <Container maxWidth="md" sx={{ bgcolor: "#fff9e6", borderRadius: 3, boxShadow: "0 4px 20px rgba(0,0,0,0.2)", p: 4 }}>
-        <Typography variant="h4" fontWeight="bold" mb={4} color="#5d4a1a" textAlign="center" sx={{ textShadow: "1px 1px 2px rgba(93,74,26,0.7)" }}>
-          Riwayat Pemesanan
-        </Typography>
+    <Box
+      sx={{
+        bgcolor: "#8B6F47",
+        minHeight: "100vh",
+        py: 8,
+        px: 2,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+      }}
+    >
+      <Container
+        maxWidth="md"
+        sx={{
+          bgcolor: "#fff9e6",
+          borderRadius: 4,
+          boxShadow: "0 8px 40px rgba(0,0,0,0.3)",
+          p: { xs: 3, md: 6 },
+          mt: 4,
+          mb: 6,
+        }}
+      >
+        <Typography
+  variant="h4"
+  fontWeight="bold"
+  mb={5}
+  color="#5d4a1a"
+  textAlign="center"
+>
+  Riwayat Pemesanan
+</Typography>
 
         {history.length === 0 ? (
-          <Typography variant="body1" textAlign="center" color="#5d4a1a" sx={{ mt: 4, fontStyle: "italic" }}>
+          <Typography
+            variant="body1"
+            textAlign="center"
+            color="#5d4a1a"
+            sx={{ mt: 6, fontStyle: "italic", fontSize: "1.2rem" }}
+          >
             Belum ada riwayat pemesanan.
           </Typography>
         ) : (
-          <Grid container spacing={4} justifyContent="center">
-            {history.map((item) => (
-              <Grid item xs={12} key={item.id}>
-                <Card sx={{ borderRadius: 3, boxShadow: 4, bgcolor: "#fff6cc", transition: "transform 0.3s", "&:hover": { transform: "scale(1.02)", boxShadow: 6, bgcolor: "#fff3b8" } }}>
-                  <CardContent>
-                    <Box sx={{ bgcolor: "rgba(93,74,26,0.15)", borderRadius: 1, p: 1, mb: 2 }}>
-                      <Typography variant="h6" fontWeight="bold" color="#5d4a1a" gutterBottom>
-                        {hotelNames[item.hotel_id] || "Loading..."}
+          <Grid container spacing={5} justifyContent="center">
+            {history.map((item) => {
+              const hotel = hotelDetails[item.hotel_id];
+              return (
+                <Grid item xs={12} md={10} lg={8} key={item.id}>
+                  <Card
+                    sx={{
+                      borderRadius: 5,
+                      boxShadow: 6,
+                      display: "flex",
+                      flexDirection: { xs: "column", md: "row" },
+                      overflow: "hidden",
+                      bgcolor: "#fffef7",
+                    }}
+                  >
+                    {/* Sidebar kiri */}
+                    <Box
+                      sx={{
+                        bgcolor: "#fff6cc",
+                        width: { xs: "100%", md: "35%" },
+                        p: 4,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        gap: 2,
+                        textAlign: "left",
+                      }}
+                    >
+                      <Typography
+                        variant="h6"
+                        fontWeight="bold"
+                        color="#5d4a1a"
+                        gutterBottom
+                      >
+                        {hotel?.name || "Loading..."}
+                      </Typography>
+                      <Typography sx={{ fontWeight: "600" }}>Pemesan:</Typography>
+                      <Typography>{item.guest_name}</Typography>
+
+                      <Typography sx={{ fontWeight: "600" }}>Tipe Kamar:</Typography>
+                      <Typography>{item.room_type}</Typography>
+
+                      <Typography sx={{ fontWeight: "600" }}>Check-in:</Typography>
+                      <Typography>{item.check_in_date}</Typography>
+
+                      <Typography sx={{ fontWeight: "600" }}>Check-out:</Typography>
+                      <Typography>{item.check_out_date}</Typography>
+
+                      <Typography
+                        fontWeight="bold"
+                        color="#7a6520"
+                        sx={{ mt: 3, fontSize: "1.1rem" }}
+                      >
+                        Total Harga:
+                      </Typography>
+                      <Typography fontWeight="bold" color="#7a6520" fontSize="1.2rem">
+                        {formatPrice(item.total_price)}
                       </Typography>
                     </Box>
 
-                    <Divider sx={{ mb: 2 }} />
-
-                    <Box sx={{ bgcolor: "rgba(93,74,26,0.07)", p: 1, borderRadius: 1, mb: 2 }}>
-                      <Typography variant="subtitle1" fontWeight="bold" color="#5d4a1a">
-                        Pemesan: {item.guest_name}
-                      </Typography>
+                    {/* Konten utama kanan */}
+                    <Box
+                      sx={{
+                        width: { xs: "100%", md: "65%" },
+                        p: 3,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        textAlign: "left",
+                      }}
+                    >
+                      <CardMedia
+                        component="img"
+                        image={hotel?.image_url || "/assets/default-hotel.jpg"}
+                        alt={hotel?.name || "Hotel Image"}
+                        sx={{
+                          borderRadius: 3,
+                          height: 250,
+                          objectFit: "cover",
+                          mb: 3,
+                          boxShadow: "0 4px 15px rgba(0,0,0,0.15)",
+                        }}
+                      />
+                      <Box>
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          color="#5d4a1a"
+                          gutterBottom
+                        >
+                          Detail Hotel
+                        </Typography>
+                        <Typography sx={{ mb: 1 }}>
+                          <strong>Lokasi:</strong> {hotel?.address || "Lokasi tidak tersedia"}
+                        </Typography>
+                      </Box>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          bgcolor: "#8B6F47",
+                          mt: 4,
+                          textTransform: "none",
+                          borderRadius: 3,
+                          fontWeight: "bold",
+                          fontSize: "1rem",
+                          px: 4,
+                          py: 1.5,
+                          "&:hover": { bgcolor: "#725e3b" },
+                        }}
+                        onClick={() => handleViewDetail(item)}
+                      >
+                        Lihat Detail
+                      </Button>
                     </Box>
-
-                    <Box sx={{ bgcolor: "rgba(93,74,26,0.07)", p: 2, borderRadius: 2, mb: 2, color: "#5d4a1a", display: "flex", flexDirection: "column", gap: 1.5 }}>
-                      <Typography><strong>Tipe Kamar:</strong> {item.room_type}</Typography>
-                      <Typography><strong>Check-in:</strong> {item.check_in_date}</Typography>
-                      <Typography><strong>Check-out:</strong> {item.check_out_date}</Typography>
-                      <Typography fontWeight="bold" color="#7a6520">Total Harga: {formatPrice(item.total_price)}</Typography>
-                    </Box>
-
-                    <Button variant="contained" fullWidth sx={{ bgcolor: "#80652F", "&:hover": { bgcolor: "#6a5329" } }} onClick={() => handleViewDetail(item)}>
-                      Lihat Detail
-                    </Button>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
+                  </Card>
+                </Grid>
+              );
+            })}
           </Grid>
         )}
 
-        <Box textAlign="center" mt={6}>
-          <Button variant="outlined" sx={{ color: "#5d4a1a", borderColor: "#5d4a1a", fontWeight: "bold", fontSize: "1rem", padding: "8px 32px", borderRadius: 2, "&:hover": { backgroundColor: "rgba(93, 74, 26, 0.15)", borderColor: "#4b3f15", color: "#4b3f15" } }} onClick={handleBack}>
+        <Box textAlign="center" mt={8}>
+          <Button
+            variant="outlined"
+            sx={{
+              color: "#5d4a1a",
+              borderColor: "#5d4a1a",
+              fontWeight: "bold",
+              fontSize: "1.1rem",
+              padding: "10px 36px",
+              borderRadius: 3,
+              boxShadow: "1px 1px 5px rgba(93,74,26,0.4)",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                backgroundColor: "rgba(93, 74, 26, 0.15)",
+                borderColor: "#4b3f15",
+                color: "#4b3f15",
+                boxShadow: "3px 3px 10px rgba(75,63,21,0.7)",
+              },
+            }}
+            onClick={handleBack}
+          >
             Kembali
           </Button>
         </Box>

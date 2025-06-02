@@ -5,42 +5,33 @@ import {
   Typography,
   Card,
   CardContent,
+  CardMedia,
   Button,
-  Divider,
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "../axiosInstance"; // Pastikan path ini benar
-// import { BASE_URL } from "../utils";
+import axios from "../axiosInstance";
 
 const DetailPemesanan = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const data = location.state || null;
 
-  const [hotelName, setHotelName] = useState("");
+  const [hotel, setHotel] = useState(null);
 
   useEffect(() => {
-    console.log("DATA:", data); // 🟡 Cek apakah hotel_id tersedia
-
-    const fetchHotelName = async () => {
+    const fetchHotel = async () => {
       if (!data || !data.hotel_id) {
-        console.warn("hotel_id tidak tersedia");
+        setHotel(null);
         return;
       }
-
       try {
         const res = await axios.get(`/api/hotels/${data.hotel_id}`);
-        console.log("RESPON HOTEL:", res.data); // 🟢 Lihat bentuk respons
-
-        // Sesuaikan dengan bentuk respons backend kamu
-        setHotelName(res.data.name || "Tidak diketahui");
-      } catch (error) {
-        console.error("Gagal mengambil data hotel:", error);
-        setHotelName("Tidak diketahui");
+        setHotel(res.data);
+      } catch {
+        setHotel(null);
       }
     };
-
-    fetchHotelName();
+    fetchHotel();
   }, [data]);
 
   const formatPrice = (price) =>
@@ -48,7 +39,7 @@ const DetailPemesanan = () => {
 
   if (!data) {
     return (
-      <Container maxWidth="sm" sx={{ py: 6 }}>
+      <Container maxWidth="sm" sx={{ py: 6, maxWidth: 700, margin: "0 auto" }}>
         <Typography variant="h6" color="error" textAlign="center">
           Detail pemesanan tidak ditemukan.
         </Typography>
@@ -62,91 +53,128 @@ const DetailPemesanan = () => {
   }
 
   return (
-    <Container maxWidth="sm" sx={{ py: 6 }}>
-      <Card sx={{ bgcolor: "#fff9e6", borderRadius: 3, boxShadow: 4 }}>
-        <CardContent>
-          <Typography
-            variant="h5"
-            fontWeight="bold"
-            mb={2}
-            color="#5d4a1a"
-            textAlign="center"
-          >
-            Detail Pemesanan
+    <Box
+      sx={{
+        bgcolor: "#8B6F47",
+        minHeight: "100vh",
+        py: 8,
+        px: 2,
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      <Card
+        sx={{
+          maxWidth: 900,
+          width: "100%",
+          borderRadius: 4,
+          boxShadow: "0 8px 30px rgba(0,0,0,0.3)",
+          display: "flex",
+          overflow: "hidden",
+        }}
+      >
+        {/* Kiri - Data pemesanan */}
+        <Box
+          sx={{
+            bgcolor: "#f5f1de",
+            width: "40%",
+            p: 4,
+            display: "flex",
+            flexDirection: "column",
+            gap: 1.5,
+          }}
+        >
+          <Typography variant="h6" fontWeight="bold" color="#5d4a1a" mb={1}>
+            {hotel?.name || "Nama Hotel Tidak Diketahui"}
           </Typography>
 
-          <Divider sx={{ mb: 3 }} />
-
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle1" fontWeight="bold" color="#6b4e1a">
-              Hotel
+          <Box sx={{ mb: 1 }}>
+            <Typography fontWeight="bold" color="#5d4a1a" component="span">
+              Pemesan:
             </Typography>
-            <Typography>{hotelName}</Typography>
+            <Typography>{data.guest_name || "-"}</Typography>
           </Box>
 
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle1" fontWeight="bold" color="#6b4e1a">
-              Nama Pemesan
+          <Box sx={{ mb: 1 }}>
+            <Typography fontWeight="bold" color="#5d4a1a" component="span">
+              Tipe Kamar:
             </Typography>
-            <Typography>{data.guest_name || "N/A"}</Typography>
+            <Typography>{data.room_type || "-"}</Typography>
           </Box>
 
-          <Box sx={{ mb: 2 }}>
-            <Typography variant="subtitle1" fontWeight="bold" color="#6b4e1a">
-              Tipe Kamar
+          <Box sx={{ mb: 1 }}>
+            <Typography fontWeight="bold" color="#5d4a1a" component="span">
+              Check-in:
             </Typography>
-            <Typography>{data.room_type}</Typography>
+            <Typography>{data.check_in_date || "-"}</Typography>
           </Box>
 
-          <Box sx={{ mb: 2, display: "flex", justifyContent: "space-between" }}>
-            <Box>
-              <Typography
-                variant="subtitle1"
-                fontWeight="bold"
-                color="#6b4e1a"
-              >
-                Check-in
-              </Typography>
-              <Typography>{data.check_in_date}</Typography>
-            </Box>
-            <Box>
-              <Typography
-                variant="subtitle1"
-                fontWeight="bold"
-                color="#6b4e1a"
-              >
-                Check-out
-              </Typography>
-              <Typography>{data.check_out_date}</Typography>
-            </Box>
+          <Box sx={{ mb: 1 }}>
+            <Typography fontWeight="bold" color="#5d4a1a" component="span">
+              Check-out:
+            </Typography>
+            <Typography>{data.check_out_date || "-"}</Typography>
           </Box>
 
-          <Box sx={{ mb: 3 }}>
-            <Typography variant="subtitle1" fontWeight="bold" color="#6b4e1a">
-              Total Harga
+          <Box sx={{ mt: 2 }}>
+            <Typography fontWeight="bold" color="#5d4a1a">
+              Total Harga:
             </Typography>
-            <Typography fontWeight="bold" color="#7a6520" fontSize="1.2rem">
+            <Typography fontWeight="bold" fontSize="1.3rem" color="#7a6520">
               {formatPrice(data.total_price)}
             </Typography>
           </Box>
+        </Box>
 
-          <Box textAlign="center">
+        {/* Kanan - Gambar + detail hotel + tombol kembali */}
+        <Box
+          sx={{
+            width: "60%",
+            p: 4,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          {hotel?.image_url && (
+            <CardMedia
+              component="img"
+              image={hotel.image_url}
+              alt={hotel.name}
+              sx={{ borderRadius: 3, mb: 3, height: 250, objectFit: "cover" }}
+            />
+          )}
+
+          <Box>
+            <Typography variant="h6" fontWeight="bold" mb={1} color="#5d4a1a">
+              Detail Hotel
+            </Typography>
+            <Typography mb={2}>
+              <strong>Lokasi:</strong> {hotel?.address || "-"}
+            </Typography>
+          </Box>
+
+          <Box textAlign="center" mt={2}>
             <Button
-              variant="outlined"
+              variant="contained"
               sx={{
-                color: "#80652F",
-                borderColor: "#80652F",
+                bgcolor: "#8B6F47",
+                textTransform: "none",
+                borderRadius: 3,
                 fontWeight: "bold",
-                px: 5,
+                fontSize: "1rem",
+                py: 1.5,
+                px: 6,
+                "&:hover": { bgcolor: "#725e3b" },
               }}
-              onClick={() => navigate(-1)}
+              onClick={() => navigate("/riwayat")}
             >
               Kembali
             </Button>
           </Box>
-        </CardContent>
+        </Box>
       </Card>
-    </Container>
+    </Box>
   );
 };
 
