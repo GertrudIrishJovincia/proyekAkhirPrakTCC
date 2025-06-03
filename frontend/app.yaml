@@ -3,12 +3,15 @@ service: proyekakhirpraktcc-fe
 instance_class: F1
 
 handlers:
-  - url: /
+  # Semua file statis (js, css, gambar, dll)
+  - url: /(.*\.(js|css|png|jpg|ico|json|svg|map))
+    static_files: build/\1
+    upload: build/(.*\.(js|css|png|jpg|ico|json|svg|map))
+
+  # Semua route lain (misal /landingpage, /booking, dll)
+  # diarahkan ke index.html supaya React Router yang handle
+  - url: /.*
     static_files: build/index.html
     upload: build/index.html
-
-  - url: /(.*)
-    static_files: build/\1
-    upload: build/(.*)
 
 default_expiration: "1h"
