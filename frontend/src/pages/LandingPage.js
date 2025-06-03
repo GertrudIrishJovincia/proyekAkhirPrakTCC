@@ -218,8 +218,8 @@ const LandingPage = () => {
                     >
                       {hotel.address}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                    Harga per malam: Rp{hotel.price_min} - Rp{hotel.price_max}
+                   <Typography variant="body2" color="text.secondary">
+                    Harga per malam: Rp{Number(hotel.price_min).toLocaleString('id-ID')} - Rp{Number(hotel.price_max).toLocaleString('id-ID')}
                   </Typography>
 
                   </Box>
@@ -231,10 +231,10 @@ const LandingPage = () => {
                         textTransform: 'none',
                         borderRadius: 10,
                       }}
-                      onClick={() => {
-                        setSelectedHotel(hotel);
-                        setOpenConfirmDialog(true);
-                      }}
+                     onClick={() => {
+                      setSelectedHotel(hotel);
+                      setOpenConfirmDialog(true);
+                    }}
                     >
                       Pesan Sekarang
                     </Button>
@@ -262,13 +262,13 @@ const LandingPage = () => {
       <Typography sx={{ mb: 1 }}><strong>Alamat:</strong> {selectedHotel.address}</Typography>
       <Typography sx={{ mb: 1 }}><strong>Fasilitas:</strong> {selectedHotel.facilities}</Typography>
 
-    {selectedHotel.room_types && selectedHotel.room_types.length > 0 && (
+  {selectedHotel.room_types && selectedHotel.room_types.length > 0 && (
   <>
     <Typography sx={{ mt: 2, fontWeight: 'bold' }}>Tipe Kamar:</Typography>
     {selectedHotel.room_types.map((room, idx) => (
       <Box key={idx} sx={{ ml: 2, mb: 1 }}>
         <Typography><strong>• Tipe:</strong> {room.type}</Typography>
-        <Typography><strong>  Harga per Malam:</strong> Rp{room.price_per_night.toLocaleString('id-ID')}</Typography>
+        <Typography><strong>  Harga per Malam:</strong> Rp{Number(room.price_per_night).toLocaleString('id-ID')}</Typography>
         <Typography><strong>  Stok Kamar:</strong> {room.stock}</Typography>
       </Box>
     ))}

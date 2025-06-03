@@ -11,6 +11,7 @@ import DetailPemesanan from './pages/DetailPemesanan';
 import AdminDashboard from './pages/AdminDashboard';
 import AddHotel from './pages/AddHotel';
 import EditHotel from './pages/EditHotel';
+import PrivateRoute from './private_routes.js';
 
 function App() {
   return (
@@ -18,19 +19,72 @@ function App() {
       <GlobalStyle /> 
       <Router>
         <Routes>
+          {/* Route publik */}
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/landingpage" element={<LandingPage />} />
-          <Route path="/booking" element={<BookingForm />} />
-          <Route path="/riwayat" element={<RiwayatPemesanan />} />
-          <Route path="/detail-pemesanan/:id" element={<DetailPemesanan />} />
-          <Route path="/admin" element={<AdminDashboard />} />
-          <Route path="/admin/hotels/add" element={<AddHotel />} />
-          <Route path="/admin/hotels/edit/:id" element={<EditHotel />} />
+
+          {/* Route yang diproteksi */}
+          <Route 
+            path="/landingpage" 
+            element={
+              <PrivateRoute>
+                <LandingPage />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/booking" 
+            element={
+              <PrivateRoute>
+                <BookingForm />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/riwayat" 
+            element={
+              <PrivateRoute>
+                <RiwayatPemesanan />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/detail-pemesanan/:id" 
+            element={
+              <PrivateRoute>
+                <DetailPemesanan />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/admin" 
+            element={
+              <PrivateRoute>
+                <AdminDashboard />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/admin/hotels/add" 
+            element={
+              <PrivateRoute>
+                <AddHotel />
+              </PrivateRoute>
+            } 
+          />
+          <Route 
+            path="/admin/hotels/edit/:id" 
+            element={
+              <PrivateRoute>
+                <EditHotel />
+              </PrivateRoute>
+            } 
+          />
         </Routes>
       </Router>
     </>
   );
 }
+
 
 export default App;
