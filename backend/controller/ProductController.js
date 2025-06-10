@@ -1,6 +1,6 @@
 import Product from "../models/Product.js";
 import Category from "../models/Category.js";
-import User from "../models/Users.js";
+import User from "../models/UserModel.js"; // Fixed: change from Users.js to UserModel.js
 import { Op } from "sequelize";
 
 export const getProducts = async (req, res) => {
@@ -12,6 +12,7 @@ export const getProducts = async (req, res) => {
         include: [
           {
             model: User,
+            as: 'user', // Add alias to match associations
             attributes: ['name', 'email']
           },
           {
@@ -30,6 +31,7 @@ export const getProducts = async (req, res) => {
         include: [
           {
             model: User,
+            as: 'user', // Add alias to match associations
             attributes: ['name', 'email']
           },
           {
@@ -65,6 +67,7 @@ export const getProductById = async (req, res) => {
         include: [
           {
             model: User,
+            as: 'user', // Add alias to match associations
             attributes: ['name', 'email']
           },
           {
@@ -83,6 +86,7 @@ export const getProductById = async (req, res) => {
         include: [
           {
             model: User,
+            as: 'user', // Add alias to match associations
             attributes: ['name', 'email']
           },
           {
@@ -100,12 +104,12 @@ export const getProductById = async (req, res) => {
 }
 
 export const createProduct = async (req, res) => {
-  const { name, price, categoryId } = req.body; // Use categoryId instead of category
+  const { name, price, category_id } = req.body; // Change to category_id to match associations
   try {
     await Product.create({
       name: name,
       price: price,
-      categoryId: categoryId, // Use categoryId
+      category_id: category_id, // Use category_id
       userId: req.userId
     });
     res.status(201).json({ msg: "Product Created Successfully" });
@@ -123,16 +127,16 @@ export const updateProduct = async (req, res) => {
     });
     if (!product) return res.status(404).json({ msg: "Data tidak ditemukan" });
     
-    const { name, price, categoryId } = req.body; // Use categoryId instead of category
+    const { name, price, category_id } = req.body; // Change to category_id
     if (req.role === "admin") {
-      await Product.update({ name, price, categoryId }, {
+      await Product.update({ name, price, category_id }, {
         where: {
           id: product.id
         }
       });
     } else {
       if (req.userId !== product.userId) return res.status(403).json({ msg: "Akses terlarang" });
-      await Product.update({ name, price, categoryId }, {
+      await Product.update({ name, price, category_id }, {
         where: {
           [Op.and]: [{ id: product.id }, { userId: req.userId }]
         }

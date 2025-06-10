@@ -27,7 +27,7 @@ const Product = db.define('products', {
       notEmpty: true
     }
   },
-  categoryId: { // Changed from 'category' to 'categoryId'
+  category_id: { // Changed to match associations
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
