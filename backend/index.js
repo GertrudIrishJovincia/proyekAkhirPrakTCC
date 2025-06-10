@@ -71,13 +71,15 @@ const startServer = async () => {
     await db.authenticate();
     console.log("✅ Koneksi database berhasil!");
 
-    // Jika diperlukan, kamu bisa menambahkan db.sync()
-    // await db.sync(); // hanya jika kamu yakin DB stabil
+    // Sinkronisasi database - ini akan membuat tabel otomatis
+    console.log("🔄 Sinkronisasi database...");
+    await db.sync({ force: true }); // force: true akan hapus tabel lama dan buat baru
+    console.log("✅ Database tersinkronisasi! Tabel baru untuk sistem barang telah dibuat.");
 
   } catch (error) {
     console.error("❌ Gagal koneksi/sinkronisasi database:", error);
   } finally {
-    app.listen(PORT, () => console.log(`🚀 Server tetap listen di port ${PORT}`));
+    app.listen(PORT, () => console.log(`🚀 Server berjalan di port ${PORT}`));
   }
 };
 

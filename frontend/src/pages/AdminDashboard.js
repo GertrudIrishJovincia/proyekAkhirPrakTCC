@@ -23,8 +23,8 @@ import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 import UserTable from '../components/UserTable';
-import HotelTable from '../components/HotelTable';
-import BookingTable from '../components/BookingTable';
+import HotelTable from '../components/ProductTable';
+import BookingTable from '../components/CategoryTable';
 import { useNavigate } from 'react-router-dom';
 
 export default function AdminDashboard() {
