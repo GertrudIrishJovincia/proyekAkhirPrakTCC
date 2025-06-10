@@ -1,40 +1,49 @@
-import { DataTypes } from "sequelize";
+import { Sequelize } from "sequelize";
 import db from "../config/database.js";
 
-const Product = db.define("products", {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
+const { DataTypes } = Sequelize;
+
+const Product = db.define('products', {
+  uuid: {
+    type: DataTypes.STRING,
+    defaultValue: DataTypes.UUIDV4,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
   },
   name: {
     type: DataTypes.STRING,
     allowNull: false,
-  },
-  description: {
-    type: DataTypes.STRING,
-    allowNull: true,
+    validate: {
+      notEmpty: true,
+      len: [3, 100]
+    }
   },
   price: {
-    type: DataTypes.DECIMAL(10, 2),
-    allowNull: false,
-  },
-  category: {
-    type: DataTypes.STRING,
-    allowNull: true,
-  },
-  stock: {
     type: DataTypes.INTEGER,
     allowNull: false,
+    validate: {
+      notEmpty: true
+    }
   },
-  image_url: {
-    type: DataTypes.STRING,
-    allowNull: true,
+  categoryId: { // Changed from 'category' to 'categoryId'
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'categories',
+      key: 'id'
+    }
   },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    validate: {
+      notEmpty: true
+    }
+  }
 }, {
-  timestamps: true,
-  createdAt: "created_at",
-  updatedAt: "updated_at",
+  freezeTableName: true
 });
 
 export default Product;

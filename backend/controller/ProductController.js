@@ -1,55 +1,174 @@
 import Product from "../models/Product.js";
 import Category from "../models/Category.js";
+import User from "../models/Users.js";
+import { Op } from "sequelize";
 
-// Ambil semua produk
 export const getProducts = async (req, res) => {
   try {
-    const products = await Product.findAll({
-      include: [{ model: Category, attributes: ['type'] }]
-    });
-    res.status(200).json(products);
+    let response;
+    if (req.role === "admin") {
+      response = await Product.findAll({
+        attributes: ['uuid', 'name', 'price'],
+        include: [
+          {
+            model: User,
+            attributes: ['name', 'email']
+          },
+          {
+            model: Category,
+            as: 'categoryInfo', // Use the alias from associations
+            attributes: ['type', 'description']
+          }
+        ]
+      });
+    } else {
+      response = await Product.findAll({
+        attributes: ['uuid', 'name', 'price'],
+        where: {
+          userId: req.userId
+        },
+        include: [
+          {
+            model: User,
+            attributes: ['name', 'email']
+          },
+          {
+            model: Category,
+            as: 'categoryInfo', // Use the alias from associations
+            attributes: ['type', 'description']
+          }
+        ]
+      });
+    }
+    res.status(200).json(response);
   } catch (error) {
-    res.status(500).json({ msg: "Terjadi kesalahan server" });
+    res.status(500).json({ msg: error.message });
   }
-};
+}
 
-// Tambah produk baru
-export const createProduct = async (req, res) => {
+export const getProductById = async (req, res) => {
   try {
-    const { name, description, price, category, stock, image_url } = req.body;
-    const newProduct = await Product.create({ name, description, price, category, stock, image_url });
-    res.status(201).json({ msg: "Produk berhasil dibuat", product: newProduct });
+    const product = await Product.findOne({
+      where: {
+        uuid: req.params.id
+      }
+    });
+    if (!product) return res.status(404).json({ msg: "Data tidak ditemukan" });
+    
+    let response;
+    if (req.role === "admin") {
+      response = await Product.findOne({
+        attributes: ['uuid', 'name', 'price'],
+        where: {
+          id: product.id
+        },
+        include: [
+          {
+            model: User,
+            attributes: ['name', 'email']
+          },
+          {
+            model: Category,
+            as: 'categoryInfo', // Use the alias from associations
+            attributes: ['type', 'description']
+          }
+        ]
+      });
+    } else {
+      response = await Product.findOne({
+        attributes: ['uuid', 'name', 'price'],
+        where: {
+          [Op.and]: [{ id: product.id }, { userId: req.userId }]
+        },
+        include: [
+          {
+            model: User,
+            attributes: ['name', 'email']
+          },
+          {
+            model: Category,
+            as: 'categoryInfo', // Use the alias from associations
+            attributes: ['type', 'description']
+          }
+        ]
+      });
+    }
+    res.status(200).json(response);
   } catch (error) {
-    res.status(500).json({ msg: "Gagal membuat produk" });
+    res.status(500).json({ msg: error.message });
   }
-};
+}
 
-// Update produk
+export const createProduct = async (req, res) => {
+  const { name, price, categoryId } = req.body; // Use categoryId instead of category
+  try {
+    await Product.create({
+      name: name,
+      price: price,
+      categoryId: categoryId, // Use categoryId
+      userId: req.userId
+    });
+    res.status(201).json({ msg: "Product Created Successfully" });
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
+  }
+}
+
 export const updateProduct = async (req, res) => {
   try {
-    const id = req.params.id;
-    const { name, description, price, category, stock, image_url } = req.body;
-    const product = await Product.findByPk(id);
-    if (!product) return res.status(404).json({ msg: "Produk tidak ditemukan" });
-
-    await product.update({ name, description, price, category, stock, image_url });
-    res.json({ msg: "Produk berhasil diperbarui", product });
+    const product = await Product.findOne({
+      where: {
+        uuid: req.params.id
+      }
+    });
+    if (!product) return res.status(404).json({ msg: "Data tidak ditemukan" });
+    
+    const { name, price, categoryId } = req.body; // Use categoryId instead of category
+    if (req.role === "admin") {
+      await Product.update({ name, price, categoryId }, {
+        where: {
+          id: product.id
+        }
+      });
+    } else {
+      if (req.userId !== product.userId) return res.status(403).json({ msg: "Akses terlarang" });
+      await Product.update({ name, price, categoryId }, {
+        where: {
+          [Op.and]: [{ id: product.id }, { userId: req.userId }]
+        }
+      });
+    }
+    res.status(200).json({ msg: "Product updated successfully" });
   } catch (error) {
-    res.status(500).json({ msg: "Gagal memperbarui produk" });
+    res.status(500).json({ msg: error.message });
   }
-};
+}
 
-// Hapus produk
 export const deleteProduct = async (req, res) => {
   try {
-    const id = req.params.id;
-    const deleted = await Product.destroy({ where: { id } });
-    if (deleted) {
-      res.json({ msg: "Produk berhasil dihapus" });
+    const product = await Product.findOne({
+      where: {
+        uuid: req.params.id
+      }
+    });
+    if (!product) return res.status(404).json({ msg: "Data tidak ditemukan" });
+    
+    if (req.role === "admin") {
+      await Product.destroy({
+        where: {
+          id: product.id
+        }
+      });
     } else {
-      res.status(404).json({ msg: "Produk tidak ditemukan" });
+      if (req.userId !== product.userId) return res.status(403).json({ msg: "Akses terlarang" });
+      await Product.destroy({
+        where: {
+          [Op.and]: [{ id: product.id }, { userId: req.userId }]
+        }
+      });
     }
+    res.status(200).json({ msg: "Product deleted successfully" });
   } catch (error) {
-    res.status(500).json({ msg: "Gagal menghapus produk" });
+    res.status(500).json({ msg: error.message });
   }
-};
+}
