@@ -14,14 +14,14 @@ import {
   Typography,
 } from '@mui/material';
 
-export default function HotelTable({ hotels, onRefresh, onDeleteHotel, onEditHotel }) {
+export default function BarangTable({ barang, onRefresh, onDeleteBarang, onEditBarang }) {
   const handleDelete = (id) => {
-    if (!window.confirm('Yakin ingin menghapus hotel ini?')) return;
-    if (onDeleteHotel) onDeleteHotel(id);
+    if (!window.confirm('Yakin ingin menghapus barang ini?')) return;
+    if (onDeleteBarang) onDeleteBarang(id);
   };
 
-  const handleEdit = (hotel) => {
-    if (onEditHotel) onEditHotel(hotel);
+  const handleEdit = (barang) => {
+    if (onEditBarang) onEditBarang(barang);
   };
 
   return (
@@ -30,28 +30,29 @@ export default function HotelTable({ hotels, onRefresh, onDeleteHotel, onEditHot
         <TableHead sx={{ backgroundColor: '#f5f5f5' }}>
           <TableRow>
             <TableCell><b>Gambar</b></TableCell>
-            <TableCell><b>Nama Hotel</b></TableCell>
+            <TableCell><b>Nama Barang</b></TableCell>
             <TableCell><b>Alamat</b></TableCell>
             <TableCell><b>Fasilitas</b></TableCell>
-            <TableCell><b>Tipe Kamar</b></TableCell>
+            <TableCell><b>Kategori</b></TableCell>
+            <TableCell><b>Harga</b></TableCell>
             <TableCell><b>Aksi</b></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {hotels.map((hotel) => (
-            <TableRow key={hotel.id}>
+          {barang.map((item) => (
+            <TableRow key={item.id}>
               <TableCell>
                 <Avatar
                   variant="rounded"
-                  src={hotel.image_url}
-                  alt={hotel.name}
+                  src={item.image_url}
+                  alt={item.name}
                   sx={{ width: 80, height: 60 }}
                 />
               </TableCell>
-              <TableCell>{hotel.name || '-'}</TableCell>
-              <TableCell>{hotel.address || '-'}</TableCell>
+              <TableCell>{item.name || '-'}</TableCell>
+              <TableCell>{item.address || '-'}</TableCell>
               <TableCell>
-                <Tooltip title={hotel.facilities || ''}>
+                <Tooltip title={item.facilities || ''}>
                   <span
                     style={{
                       whiteSpace: 'nowrap',
@@ -61,42 +62,18 @@ export default function HotelTable({ hotels, onRefresh, onDeleteHotel, onEditHot
                       display: 'inline-block',
                     }}
                   >
-                    {hotel.facilities || '-'}
+                    {item.facilities || '-'}
                   </span>
                 </Tooltip>
               </TableCell>
-              <TableCell>
-                {hotel.room_types?.length > 0 ? (
-                  <Table size="small" sx={{ backgroundColor: '#fafafa' }}>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell><b>Tipe</b></TableCell>
-                        <TableCell><b>Harga</b></TableCell>
-                        <TableCell><b>Stok</b></TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {hotel.room_types.map((room, idx) => (
-                        <TableRow key={idx}>
-                          <TableCell>{room.type}</TableCell>
-                          <TableCell>Rp {Number(room.price_per_night).toLocaleString()}</TableCell>
-                          <TableCell>{room.stock}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                ) : (
-                  <Typography variant="body2" color="text.secondary">
-                    Tidak ada data
-                  </Typography>
-                )}
-              </TableCell>
+              <TableCell>{item.category || '-'}</TableCell>
+              <TableCell>Rp {Number(item.price).toLocaleString()}</TableCell>
               <TableCell>
                 <Stack direction="row" spacing={1}>
-                  <Button variant="outlined" size="small" color="primary" onClick={() => handleEdit(hotel)}>
+                  <Button variant="outlined" size="small" color="primary" onClick={() => handleEdit(item)}>
                     Edit
                   </Button>
-                  <Button variant="outlined" size="small" color="error" onClick={() => handleDelete(hotel.id)}>
+                  <Button variant="outlined" size="small" color="error" onClick={() => handleDelete(item.id)}>
                     Hapus
                   </Button>
                 </Stack>

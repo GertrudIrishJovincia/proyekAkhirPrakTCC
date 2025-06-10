@@ -69,4 +69,17 @@ Content-Type: application/json
 }
 
 ### GET ALL BOOKINGS
-GET https://proyekakhirpraktcc-174534490336.us-central1.run.app/hotels
+POST  https://proyekakhirpraktcc-174534490336.us-central1.run.app/hotels
+
+{
+  "kode_barang": "B001",
+  "nama_barang": "Laptop",
+  "kategori": "Elektronik",
+  "jumlah": 50,
+  "satuan": "pcs",
+  "kondisi": "baik",
+  "lokasi": "Jakarta",
+  "keterangan": "Laptop baru",
+  "created_by": 1
+}
+
