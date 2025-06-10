@@ -9,33 +9,33 @@ import {
   Paper,
 } from '@mui/material';
 
-export default function PinjamBarangTable({ pinjamBarang }) {
+export default function BookingTable({ bookings }) {
   return (
     <TableContainer component={Paper} sx={{ mt: 2 }}>
       <Table size="small">
         <TableHead sx={{ backgroundColor: '#f5f5f5' }}>
           <TableRow>
-            <TableCell><b>Nama Barang</b></TableCell>
-            <TableCell><b>Nama Peminjam</b></TableCell>
-            <TableCell><b>Email Peminjam</b></TableCell>
-            <TableCell><b>Telepon Peminjam</b></TableCell>
-            <TableCell><b>Kategori Barang</b></TableCell>
-            <TableCell><b>Tanggal Pinjam</b></TableCell>
-            <TableCell><b>Tanggal Kembali</b></TableCell>
+            <TableCell><b>Nama Hotel</b></TableCell>
+            <TableCell><b>Nama Tamu</b></TableCell>
+            <TableCell><b>Email Tamu</b></TableCell>
+            <TableCell><b>Telepon Tamu</b></TableCell>
+            <TableCell><b>Tipe Kamar</b></TableCell>
+            <TableCell><b>Check In</b></TableCell>
+            <TableCell><b>Check Out</b></TableCell>
             <TableCell><b>Total Harga</b></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {pinjamBarang.map((p) => (
-            <TableRow key={p.id}>
-              <TableCell>{p.item_name}</TableCell>
-              <TableCell>{p.borrower_name}</TableCell>
-              <TableCell>{p.borrower_email}</TableCell>
-              <TableCell>{p.borrower_phone}</TableCell>
-              <TableCell>{p.category}</TableCell>
-              <TableCell>{p.borrow_date}</TableCell>
-              <TableCell>{p.return_date}</TableCell>
-              <TableCell>{`Rp ${Number(p.total_price).toLocaleString()}`}</TableCell>
+          {bookings.map((b) => (
+            <TableRow key={b.id}>
+              <TableCell>{b.hotel_name}</TableCell>
+              <TableCell>{b.guest_name}</TableCell>
+              <TableCell>{b.guest_email}</TableCell>
+              <TableCell>{b.guest_phone}</TableCell>
+              <TableCell>{b.room_type}</TableCell>
+              <TableCell>{b.check_in_date}</TableCell>
+              <TableCell>{b.check_out_date}</TableCell>
+              <TableCell>{`Rp ${Number(b.total_price).toLocaleString()}`}</TableCell>
             </TableRow>
           ))}
         </TableBody>

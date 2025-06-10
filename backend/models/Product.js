@@ -1,28 +1,35 @@
 import { DataTypes } from "sequelize";
 import db from "../config/database.js";
-import Hotel from "./HotelModels.js";
 
-const RoomType = db.define("room_types", {
+const Product = db.define("products", {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true,
   },
-  hotel_id: {
-    type: DataTypes.INTEGER,
+  name: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
-  type: {  // atau type_name
+  description: {
     type: DataTypes.STRING,
-    allowNull: false,   // wajib diisi
+    allowNull: true,
   },
-  price_per_night: {
+  price: {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false,
+  },
+  category: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
   stock: {
     type: DataTypes.INTEGER,
     allowNull: false,
+  },
+  image_url: {
+    type: DataTypes.STRING,
+    allowNull: true,
   },
 }, {
   timestamps: true,
@@ -30,4 +37,4 @@ const RoomType = db.define("room_types", {
   updatedAt: "updated_at",
 });
 
-export default RoomType;
+export default Product;
