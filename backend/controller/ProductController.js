@@ -15,6 +15,7 @@ export const getProducts = async (req, res) => {
             as: 'user', // Add alias to match associations
             attributes: ['name', 'email']
           },
+          
           {
             model: Category,
             as: 'categoryInfo', // Use the alias from associations

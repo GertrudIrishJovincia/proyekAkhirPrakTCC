@@ -73,7 +73,7 @@ const startServer = async () => {
 
     // Sinkronisasi database - ini akan membuat tabel otomatis
     console.log("🔄 Sinkronisasi database...");
-    await db.sync({ force: true }); // force: true akan hapus tabel lama dan buat baru
+    await db.sync({ force: false }); // force: false karena tabel lama sudah dihapus manual
     console.log("✅ Database tersinkronisasi! Tabel baru untuk sistem barang telah dibuat.");
 
   } catch (error) {
