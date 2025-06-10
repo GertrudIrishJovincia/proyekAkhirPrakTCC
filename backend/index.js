@@ -3,9 +3,6 @@ import express from "express";
 import cors from "cors";
 import db from "./config/database.js";
 import userRoutes from "./routes/userRoutes.js";
-import hotelRoutes from "./routes/hotelRoutes.js";
-import bookingRoutes from "./routes/bookingRoutes.js";
-import roomTypeRoutes from "./routes/roomTypeRoutes.js";
 import categoryRoutes from "./routes/CategoryRoutes.js"; // Impor route kategori
 import transactionRoutes from "./routes/TransactionRoutes.js"; // Impor route transaksi
 import productRoutes from "./routes/ProductRoutes.js"; // Impor route produk
@@ -48,9 +45,6 @@ app.use(express.json());
 
 // Definisikan routes untuk aplikasi
 app.use("/api/users", userRoutes);
-app.use("/api/hotels", hotelRoutes);
-app.use("/api/bookings", bookingRoutes);
-app.use("/api/room-types", roomTypeRoutes);
 app.use("/api/categories", categoryRoutes); // Tambahkan route kategori
 app.use("/api/transactions", transactionRoutes); // Tambahkan route transaksi
 app.use("/api/products", productRoutes); // Tambahkan route produk
